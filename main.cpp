@@ -9,19 +9,20 @@ using namespace std;
 
 void readWeights(string fileName, vector<Node> *weights);
 void readPath(string fileName, vector<Path> *path_vec);
-	
+int pathSize;
 int main(){
 	cout << "Before!" << endl;
-	int pathSize;
 	string input;
 	cout << "Enter the weights file name: ";
 	cin >> input; 
 	vector<Node> weights;
 	vector<Path> path_vec;
 
-	//readWeights(input,&weights);
+	readWeights(input,&weights);
+	cout << "Enter the path file name: ";
+	cin >> input;
 	readPath(input, &path_vec);
-/*
+
 	for(int i = 0; i < weights.size(); i++){
 		cout << "Item " << i << " is "
 			 << weights[i].get_char()
@@ -30,10 +31,10 @@ int main(){
 	}
 	for(int i = 0; i < pathSize; i++){
 		cout << "Item " << i << " is "
-			 << path[i].get_data()
+			 << path_vec[i].get_data()
 			 << " with a path of "  
-			 << path[i].get_path() << endl;
-	}*/
+			 << path_vec[i].get_path() << endl;
+	}
 	cout << "\nAfter!" << endl;	
 	return 0;
 }
@@ -76,8 +77,10 @@ void readPath(string fileName, vector<Path> *path_vec){
 			pathBinary= atof(temp.substr(1).c_str());
 			cout <<setprecision(4) << "pathBinary: " << pathBinary <<endl;
 			Path tempPath = Path(key, pathBinary);
-			//path->push_back(tempPath);
+			path_vec->push_back(tempPath);
+			pathSize ++;
 		}
+		cout <<"Path size is " << pathSize<<endl;
 	}
 	
 }
