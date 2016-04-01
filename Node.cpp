@@ -16,6 +16,11 @@ public:
 		left = NULL;
 		right = NULL;
 	}
+	/*Node(double w){
+		weight = w;
+		left = NULL;
+		right = NULL;
+	}*/
 	Node(double w, Node * L = NULL, Node * R = NULL){
 		weight = w;
 		left = L;
