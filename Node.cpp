@@ -7,6 +7,7 @@ class Node{
 private:
 	char data;
 	double weight;
+	string name; //to access nodes with no key(data), aka the pure weights nodes
 	Node *left;
 	Node *right;
 	
@@ -16,7 +17,13 @@ public:
 		left = NULL;
 		right = NULL;
 	}
-	Node(double w, Node * L = NULL, Node * R = NULL){
+	/*Node(double w){
+		weight = w;
+		left = NULL;
+		right = NULL;
+	}*/
+	Node(double w, string name, Node * L = NULL, Node * R = NULL){
+		name = NULL;
 		weight = w;
 		left = L;
 		right = R; 
