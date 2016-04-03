@@ -2,53 +2,51 @@
 #include<iomanip>
 #include<fstream>
 #include<vector>
-#include"Node.cpp"
+#include"node.h"
 #include"Path.cpp"
 #include<string>
+
 using namespace std;
 
-void readWeights(string fileName, vector<Node> *weights);
+void readWeights(string fileName, vector<node<double> > &weights);
 void readPath(string fileName, vector<Path> *path_vec);
-int pathSize;
-double totalWeight = 0;
+
 int main(){
 	cout << "Before!" << endl;
 	string input;
 	cout << "Enter the weights file name: ";
 	cin >> input; 
-	vector<Node> weights;
+	node<double>* first;
 	vector<Path> path_vec;
-	readWeights(input,&weights);
+	vector<node<double> > weights;
+	readWeights(input, weights);
+	cout << "Weights created" << endl;
 	//cout << "Enter the path file name: ";
 	//cin >> input;
 	//readPath(input, &path_vec);
-
+	
+	double totalWeight;
+	
 	for(int i = 0; i < weights.size(); i++){
-
 		cout << "Item " << i << " is " << weights[i].get_char()
 			 << " with a weight of "  
 			 << weights[i].get_weight() << endl;
-
-
-
-		totalWeight = totalWeight + weights[i].get_weight();
-		//cout << "totalWeight: " << totalWeight << endl;
-
+		totalWeight += weights[i].get_weight();
 	}
 	cout << "totalWeight: " << totalWeight << endl;
 
 
-	// for(int i = 0; i < pathSize; i++){
+	// for(double i = 0; i < pathSize; i++){
 	// 	cout << "Item " << i << " is "
 	// 		 << path_vec[i].get_data()
 	// 		 << " with a path of "  
 	// 		 << path_vec[i].get_path() << endl;
 	// }
-	cout << "\nAfter!" << endl;	
+	cout << "End!" << endl;	
 	return 0;
 }
 
-void readWeights(string fileName, vector<Node> *weights){
+void readWeights(string fileName, vector<node<double> > &weights){
 	//for line in file
 	ifstream infile;
 	char key;  			//first character is the data for node
@@ -59,18 +57,19 @@ void readWeights(string fileName, vector<Node> *weights){
 		string temp;			
 		getline(infile, temp);
 		//cout << "This line: " << temp << endl;
-		if(temp != " "){
+		if(temp != ""){
 			key = temp[0];
 			//cout << "Key: " << key << endl;
 			weight = atof(temp.substr(2,temp.size()-1).c_str());
 			//cout << "weight: " << weight<<endl;
-			Node tempNode = Node(weight, key);
-			weights->push_back(tempNode);
+			node<double> tempnode = node<double>(weight, key);
+		//	cout << "About to push" << endl;
+			weights.push_back(tempnode);
 		}
 	}
-
 }
-void readPath(string fileName, vector<Path> *path_vec){
+
+void readPath(string fileName, vector<Path> *path_vec, int pathSize){
 	//for line in file
 	ifstream infile;
 	//sting key;		//first character is the data for node
@@ -91,7 +90,5 @@ void readPath(string fileName, vector<Path> *path_vec){
 			pathSize ++;
 		}
 		// cout <<"Path size is " << pathSize<<endl;
-	}
-	
+	}	
 }
-
