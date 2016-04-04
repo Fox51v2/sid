@@ -17,13 +17,13 @@ public:
 		left = NULL;
 		right = NULL;
 	}
-	/*Node(double w){
+	Node(double w){
 		weight = w;
 		left = NULL;
 		right = NULL;
-	}*/
+	}
 	Node(double w, string name, Node * L = NULL, Node * R = NULL){
-		name = NULL;
+		name ="";
 		weight = w;
 		left = L;
 		right = R; 
