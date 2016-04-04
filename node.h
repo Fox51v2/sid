@@ -11,7 +11,7 @@ template<typename T> class node{
 		node* right;
 	public:
 		node();
-		node(T, node* L=NULL, node* R=NULL);
+		node(T w, node* L=NULL, node* R=NULL);
 		node(T w, char d, node* L=NULL, node* R=NULL);
 		char get_char();
 		T get_weight();
@@ -30,7 +30,7 @@ node<T>::node(){
 }
 template<typename T>
 node<T>::node (T w,node* L,node* R){
-	weight = w; left = L; right = R; 
+	weight = w; left = L; right = R;
 }
 
 template<typename T>
@@ -75,5 +75,10 @@ void node<T>::set_right(node *R){
 
 template<typename T> 
 bool node<T>::isLeaf(){
-	return ((left == NULL)&& (right == NULL));
+	if((left == NULL) && (right == NULL)){
+		return true;
+	}
+	else{
+		return false;
+	}
 }
