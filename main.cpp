@@ -2,53 +2,91 @@
 #include<iomanip>
 #include<fstream>
 #include<vector>
-#include"Node.cpp"
+#include"node.h"
 #include"Path.cpp"
 #include<string>
+#include<algorithm>
+
 using namespace std;
 
-void readWeights(string fileName, vector<Node> *weights);
+void readWeights(string fileName, vector<node<double> > &weights, double totalWeight);
 void readPath(string fileName, vector<Path> *path_vec);
-int pathSize;
-double totalWeight = 0;
+void sortVector(vector<node<double> > &weights);
+
 int main(){
 	cout << "Before!" << endl;
 	string input;
 	cout << "Enter the weights file name: ";
 	cin >> input; 
-	vector<Node> weights;
+	node<double>* first;
 	vector<Path> path_vec;
-	readWeights(input,&weights);
+	vector<node<double> > weights;
+	double totalWeight = 0.0;
+	readWeights(input, weights, totalWeight);
+	cout << "Weights created" << endl;
 	//cout << "Enter the path file name: ";
 	//cin >> input;
 	//readPath(input, &path_vec);
-
+	
+	//double totalWeight;
+	
 	for(int i = 0; i < weights.size(); i++){
-
 		cout << "Item " << i << " is " << weights[i].get_char()
 			 << " with a weight of "  
 			 << weights[i].get_weight() << endl;
-
-
-
-		totalWeight = totalWeight + weights[i].get_weight();
-		//cout << "totalWeight: " << totalWeight << endl;
-
+		//totalWeight += weights[i].get_weight();
 	}
 	cout << "totalWeight: " << totalWeight << endl;
+	
+	sortVector(weights);
+	
+	for(int i = 0; i < weights.size(); i++){
+		cout << "Item " << i << " is " << weights[i].get_char()
+			 << " with a weight of "  
+			 << weights[i].get_weight() << endl;
+		//totalWeight += weights[i].get_weight();
+	}
 
 
-	// for(int i = 0; i < pathSize; i++){
+	node<double> Tree = node<double>();
+	
+	
+/*
+	node<double>* currentConnection;
+	node<double>* smallest;
+	node<double>* nextSmallest;
+	for(int i = 0; i < weights.size(); i++){
+		double tempWeights;
+		if( i == 0){
+			smallest = weights[0];
+			nextSmallest = weights[1];
+			if(weights[i] < smallest){
+				smallest = weights[i];
+			}
+			else if(weights[i] < nextSmallest){
+				nextSmallest = weights[i];
+			}
+			node* toAdd = node(smallest->get_weight() + nextSmallest->get_weight(), smallest, nextSmallest);	
+			currentConnection = nextSmallest;			
+		}
+		else{
+			smallest = currentConnection;
+		}
+
+		node* toAdd = node(smallest->get_weight() + nextSmallest->get_weight(), smallest, nextSmallest);
+	}
+*/
+	// for(double i = 0; i < pathSize; i++){
 	// 	cout << "Item " << i << " is "
 	// 		 << path_vec[i].get_data()
 	// 		 << " with a path of "  
 	// 		 << path_vec[i].get_path() << endl;
 	// }
-	cout << "\nAfter!" << endl;	
+	cout << "End!" << endl;	
 	return 0;
 }
 
-void readWeights(string fileName, vector<Node> *weights){
+void readWeights(string fileName, vector<node<double> > &weights, double totalWeight){
 	//for line in file
 	ifstream infile;
 	char key;  			//first character is the data for node
@@ -59,18 +97,20 @@ void readWeights(string fileName, vector<Node> *weights){
 		string temp;			
 		getline(infile, temp);
 		//cout << "This line: " << temp << endl;
-		if(temp != " "){
+		if(temp != ""){
 			key = temp[0];
 			//cout << "Key: " << key << endl;
 			weight = atof(temp.substr(2,temp.size()-1).c_str());
+			totalWeight += weight;
 			//cout << "weight: " << weight<<endl;
-			Node tempNode = Node(weight, key);
-			weights->push_back(tempNode);
+			node<double> tempnode = node<double>(weight, key);
+		//	cout << "About to push" << endl;
+			weights.push_back(tempnode);
 		}
 	}
-
 }
-void readPath(string fileName, vector<Path> *path_vec){
+
+void readPath(string fileName, vector<Path> *path_vec, int pathSize){
 	//for line in file
 	ifstream infile;
 	//sting key;		//first character is the data for node
@@ -91,7 +131,19 @@ void readPath(string fileName, vector<Path> *path_vec){
 			pathSize ++;
 		}
 		// cout <<"Path size is " << pathSize<<endl;
-	}
-	
+	}	
 }
 
+void sortVector(vector<node<double> > &weights){
+	int i, j;
+	node<double> temp;
+	for(i = weights.size() ; i > 0; i--){
+		for(j = 1; j < i; j++){
+			if(weights[j-1].get_weight() > weights[j].get_weight()){
+				temp = weights[j-1];
+				weights[j-1] = weights[j];
+				weights[j] = temp;
+			}
+		}
+	}
+}
