@@ -9,9 +9,10 @@
 
 using namespace std;
 
-void readWeights(string fileName, vector<node<double> > &weights, double totalWeight);
+void readWeights(string fileName, vector<node<double> > &weights, double &totalWeight);
 void readPath(string fileName, vector<Path> *path_vec);
 void sortVector(vector<node<double> > &weights);
+void printTree(node<double>* root);
 
 int main(){
 	cout << "Before!" << endl;
@@ -24,6 +25,7 @@ int main(){
 	double totalWeight = 0.0;
 	readWeights(input, weights, totalWeight);
 	cout << "Weights created" << endl;
+	int sizeOfTree = weights.size();
 	//cout << "Enter the path file name: ";
 	//cin >> input;
 	//readPath(input, &path_vec);
@@ -48,9 +50,28 @@ int main(){
 	}
 
 
-	node<double> Tree = node<double>();
-	
-	
+	node<double>* root;
+	double tempWeight = 0.0;
+	node<double>* lastConnection;
+
+
+	for(int i = 0; i < sizeOfTree; i++){
+		if(i == 0){
+			node<double>* temp = new node<double>(weights[i].get_weight(),weights[i].get_char());
+			root = temp;
+			tempWeight += temp->get_weight();
+		}
+		else{
+			node<double>* temp = new node<double>(weights[i].get_weight(),weights[i].get_char());
+			lastConnection = new node<double>(root->get_weight() + temp->get_weight(), root, temp);
+			root = lastConnection;
+			tempWeight += temp->get_weight();
+		}
+	}
+	cout << "Stuff set?" << endl;
+
+	printTree(root);
+
 /*
 	node<double>* currentConnection;
 	node<double>* smallest;
@@ -86,7 +107,7 @@ int main(){
 	return 0;
 }
 
-void readWeights(string fileName, vector<node<double> > &weights, double totalWeight){
+void readWeights(string fileName, vector<node<double> > &weights, double &totalWeight){
 	//for line in file
 	ifstream infile;
 	char key;  			//first character is the data for node
@@ -144,6 +165,23 @@ void sortVector(vector<node<double> > &weights){
 				weights[j-1] = weights[j];
 				weights[j] = temp;
 			}
+		}
+	}
+}
+
+void printTree(node<double>* root){
+	cout << root->get_weight() << endl;
+	if(root == NULL){
+		cout << "End" << endl;
+	}
+	else{
+		if(root->isLeaf()){
+			cout << "Leaf: " << root->get_char() 
+				 << "\t weighs " << root->get_weight() << endl;
+		}
+		else{
+			printTree(root->left_child());
+			printTree(root->right_child());
 		}
 	}
 }
