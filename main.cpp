@@ -13,6 +13,10 @@ void readWeights(string fileName, vector<node<double> > &weights, double &totalW
 void readPath(string fileName, vector<Path> *path_vec);
 void sortVector(vector<node<double> > &weights);
 void printTree(node<double>* root);
+void printPath(node<double>* root,char letter);
+string path;
+int num;
+int totalNum;
 
 int main(){
 	cout << "Before!" << endl;
@@ -36,12 +40,12 @@ int main(){
 		cout << "Item " << i << " is " << weights[i].get_char()
 			 << " with a weight of "  
 			 << weights[i].get_weight() << endl;
+			 totalNum++;
 		//totalWeight += weights[i].get_weight();
 	}
 	cout << "totalWeight: " << totalWeight << endl;
 	
 	sortVector(weights);
-	
 	for(int i = 0; i < weights.size(); i++){
 		cout << "Item " << i << " is " << weights[i].get_char()
 			 << " with a weight of "  
@@ -70,7 +74,13 @@ int main(){
 	}
 	cout << "Stuff set?" << endl;
 
+	char letter;
+	cout << "Insert letter: " << endl;
+	cin >> letter;
 	printTree(root);
+
+	// Diego is sending the path to this function
+	printPath(root,letter);
 
 /*
 	node<double>* currentConnection;
@@ -83,7 +93,7 @@ int main(){
 			nextSmallest = weights[1];
 			if(weights[i] < smallest){
 				smallest = weights[i];
-			}
+			
 			else if(weights[i] < nextSmallest){
 				nextSmallest = weights[i];
 			}
@@ -104,32 +114,6 @@ int main(){
 	// 		 << path_vec[i].get_path() << endl;
 	// }
 	
-	char letter;
-	int count;
-	string path;
-	cout << "Insert letter: " << endl;
-	cin >> letter; 
-	for(int i = weights.size()-1; i > 0; i--){
-		// cout << "Item " << i << " is " << weights[i].get_char() << " with a weight of " << weights[i].get_weight() << endl;
-		if(weights[i].get_char() == letter){
-			if(i==weights.size()){
-				path = "1";
-			}
-			else{
-				path.insert(0,"1"); 
-			}
-			cout << "Path nigga! " << path << endl;
-			break;
-		}
-		else{
-			path = path + "0";
-		}
-		count++;
-		//totalWeight += weights[i].get_weight();
-	}
-
-
-
 
 	cout << "End!" << endl;	
 
@@ -198,15 +182,51 @@ void sortVector(vector<node<double> > &weights){
 	}
 }
 
-void printTree(node<double>* root){
-	cout << root->get_weight() << endl;
+// THIS IS DIEGO'S METHOD
+void printPath(node<double>* root, char letter){
+	// cout << root->get_weight() << endl;
 	if(root == NULL){
 		cout << "End" << endl;
 	}
 	else{
 		if(root->isLeaf()){
-			cout << "Leaf: " << root->get_char() 
-				 << "\t weighs " << root->get_weight() << endl;
+			// cout << "Leaf: " << root->get_char() 
+				 // << "\t weighs " << root->get_weight() << endl;
+			char curr =root->get_char();
+			if(curr == letter){
+				int newNum = totalNum-(num/2);
+				for(int i = 0; i<(newNum-1); i++){
+					if(i == 0){
+						path = "1";
+					}
+					else{
+						path = path + "0";
+					}
+				}
+				cout << "Path nigga! " << path << endl;
+			}
+
+		}
+		else{
+
+			printPath(root->left_child(),letter);
+			printPath(root->right_child(),letter);
+		}
+	}
+	num++;
+	//num =num/2;
+}
+
+
+void printTree(node<double>* root){
+	// cout << root->get_weight() << endl;
+	if(root == NULL){
+		cout << "End" << endl;
+	}
+	else{
+		if(root->isLeaf()){
+			cout << "Leaf: " << root->get_char()  << "\t weighs " << root->get_weight() << endl;
+
 		}
 		else{
 			printTree(root->left_child());
