@@ -114,7 +114,36 @@ int main(){
 	// 		 << " with a path of "  
 	// 		 << path_vec[i].get_path() << endl;
 	// }
+	
+	char letter;
+	int count;
+	string path;
+	cout << "Insert letter: " << endl;
+	cin >> letter; 
+	for(int i = weights.size()-1; i > 0; i--){
+		// cout << "Item " << i << " is " << weights[i].get_char() << " with a weight of " << weights[i].get_weight() << endl;
+		if(weights[i].get_char() == letter){
+			if(i==weights.size()){
+				path = "1";
+			}
+			else{
+				path.insert(0,"1"); 
+			}
+			cout << "Path nigga! " << path << endl;
+			break;
+		}
+		else{
+			path = path + "0";
+		}
+		count++;
+		//totalWeight += weights[i].get_weight();
+	}
+
+
+
+
 	cout << "End!" << endl;	
+
 	return 0;
 }
 
