@@ -8,7 +8,7 @@
 #include<algorithm>
 
 using namespace std;
-
+void Decode(node<double> *root, string encoded);
 void readWeights(string fileName, vector<node<double> > &weights, double &totalWeight);
 void readPath(string fileName, vector<Path> *path_vec);
 void sortVector(vector<node<double> > &weights);
@@ -60,17 +60,28 @@ int main(){
 			node<double>* temp = new node<double>(weights[i].get_weight(),weights[i].get_char());
 			root = temp;
 			tempWeight += temp->get_weight();
+			root->setBiNum(0);
 		}
 		else{
 			node<double>* temp = new node<double>(weights[i].get_weight(),weights[i].get_char());
 			lastConnection = new node<double>(root->get_weight() + temp->get_weight(), root, temp);
 			root = lastConnection;
+			root->setBiNum(0);
+			temp->setBiNum(1);
 			tempWeight += temp->get_weight();
+
+			cout << "this is the binary on right child "<<root->getBiNum() <<endl;
+			cout << "this is the binary on right child "<<temp->getBiNum() <<endl;
 		}
 	}
 	cout << "Stuff set?" << endl;
 
+
+
+
 	printTree(root);
+	Decode(root,"0001");
+
 
 /*
 	node<double>* currentConnection;
@@ -185,3 +196,41 @@ void printTree(node<double>* root){
 		}
 	}
 }
+
+void Decode(node<double> *root, string encoded){
+	 	node<double>* ptrRoot;
+	 	char finalCharacter;
+	 	int size = 0;
+	 	//cout << "this is root left_child: " << root->get_weight() << endl; 
+	 	for (int i = 0; i < encoded.size(); i ++){
+	 		char x = encoded[i];
+	 		if (x == '0'){
+	 			ptrRoot = root->left_child();
+	 			//cout << "this is the left child " << ptrRoot->right_child()->get_char() <<endl;
+	 			finalCharacter = ptrRoot->right_child()->get_char();
+	 			root = ptrRoot;
+	 		}
+
+	 		else{
+	 			if (encoded.size() > 1){
+	 			if(ptrRoot->right_child() != NULL){
+	 			root = ptrRoot->left_child();
+	 			//cout << "this is the right child " << root->right_child()->get_char() <<endl;
+	 			finalCharacter = ptrRoot->right_child()->get_char();
+	 		}
+	 		}
+	 		else{
+	 			finalCharacter = root->right_child()->get_char();
+	 		}
+	 	}
+
+
+	 	size ++;
+	 	}
+	 	cout << "The decoded binary code is: " << finalCharacter << endl;
+	 	
+	 }
+
+
+
+
