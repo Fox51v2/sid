@@ -126,28 +126,27 @@ string getCharPath(node<double>* root, int sizeOfTree, char c){
 	char left = '0';
 	char right = '1';
 	node<double>* lastRoot;
-	for(int i = 0; i < sizeOfTree; i++){
-		if(i == 0){ 
-			if(root->right_child()->get_char() == c){
-				cout << "Added 1 -- i == size - 1 if" << endl;
-				path += right;
-				break;
-			}
+	for(int i = 0; i < sizeOfTree ; i++){
+		if(root->right_child()->get_char() == c){
+			cout << "Added 1 -- i == size - 1 if" << endl;
+			path += right;
+			break;
 		}
 		else{
-			if(root->right_child()->get_char() == c){
+			if(root->left_child()->get_char() == c){
 				cout << "Added 1 -- else if" << endl;
 				path += right;
 				break;
 			}
 			else{
-				cout << "Added 0 -- else else" << endl;
+				cout << "Added 0 -- else else if" << endl;
 				path += left;
-				lastRoot = root;
-				if(root->left_child() != NULL)
+				if(root->left_child()){
+					lastRoot = root;
 					cout << "Changed root to left child" << endl;
 					root = root->left_child();
-			}
+				}
+			}			
 		}
 	}
 	return path;	
