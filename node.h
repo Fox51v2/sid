@@ -9,6 +9,7 @@ template<typename T> class node{
 		T weight;
 		node* left;
 		node* right;
+		int biNum;
 	public:
 		node();
 		node(T w, node* L=NULL, node* R=NULL);
@@ -21,7 +22,18 @@ template<typename T> class node{
 		void set_left(node* L);
 		void set_right(node* R);
 		bool isLeaf();
+		void setBiNum(T x);
+		int getBiNum();
+		
 };
+template <typename T>
+void node<T>::setBiNum(T x){
+	biNum = x;
+}
+template <typename T>
+int node<T>:: getBiNum(){
+	return biNum;
+}
 
 template <typename T>
 node<T>::node(){
