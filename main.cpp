@@ -9,13 +9,14 @@
 
 using namespace std;
 
-string getCharPath(node<double>* root, int sizeOfTree, char c);
+string getCharPath(node<double>* root, int sizeOfTree, string c);
 void Decode(node<double> *root, string encoded);
 void readWeights(string fileName, vector<node<double> > &weights, double &totalWeight);
 void readPath(string fileName, vector<Path> *path_vec);
 void sortVector(vector<node<double> > &weights);
+void sortNodeVector(vector<node<double>* > &nodes);
 void printTree(node<double>* root);
-void printPath(node<double>* root,char letter);
+void printPath(node<double>* root,string letter);
 string path;
 int num;
 int totalNum;
@@ -54,13 +55,46 @@ int main(){
 			 << weights[i].get_weight() << endl;
 		//totalWeight += weights[i].get_weight();
 	}
+ 	
+ 	vector<node<double>* > nodes;
+	for(int i = 0; i < weights.size(); i++){
+		nodes.push_back(new node<double>(weights[i].get_weight(),weights[i].get_char(),NULL,NULL));
+	}
+	cout << "Populated nodes vector" << endl;
+	for(int i = 0; i < nodes.size(); i++){
+		cout << "Nodes[" << i << "]: " << nodes[i]->get_weight() << endl;
+	}
+	node<double>* newNode;
 
+	while(nodes[0]->get_weight() != totalWeight){
+		sortNodeVector(nodes);					//sort the vector
+		node<double>* smallest = nodes[0]; 		//the last item is smallest
+		node<double>* nextSmallest = nodes[1];	//the second to last item is next smallest
+		cout << "Building new node..." << endl;
+		cout << "From characters: " 
+				<< smallest->get_char() << " and "
+				<< nextSmallest->get_char() << endl;
+		cout << "From weights: "
+				<< smallest->get_weight() << " and "
+				<< nextSmallest->get_weight() << endl;
+		newNode = new node<double>(smallest->get_weight()+nextSmallest->get_weight(),
+					smallest->get_char()+nextSmallest->get_char(), smallest,nextSmallest);	//make a new node
+		nodes.erase(nodes.begin());						//we used smallest already
+		nodes.erase(nodes.begin());						//we used nextSmallest, too
+		nodes.push_back(newNode);				//add new node into the vector
+		
+		cout << "Added node with weight " << nodes.back()->get_weight() << endl;
+	}
+	for(int i = 0; i < nodes.size(); i++){
+		cout << "Nodes[" << i << "]: " << nodes[i]->get_weight() << endl;
+	}
+	node<double>* root = nodes[0];
+	printTree(root);
 
+	/*
 	node<double>* root;
-	double tempWeight = 0.0;
+	double tempWeight;
 	node<double>* lastConnection;
-
-
 	for(int i = 0; i < sizeOfTree; i++){
 		if(i == 0){
 			node<double>* temp = new node<double>(weights[i].get_weight(),weights[i].get_char());
@@ -80,9 +114,10 @@ int main(){
 			cout << "this is the binary on right child "<<temp->getBiNum() <<endl;
 		}
 	}
+	*/
 	cout << "Stuff set?" << endl;
 
-	char letter;
+	string letter;
 	cout << "Insert letter: " << endl;
 	cin >> letter;
 	printTree(root);
@@ -122,14 +157,14 @@ int main(){
 	// 		 << " with a path of "  
 	// 		 << path_vec[i].get_path() << endl;
 	// }
-	
+	/*
 	int count;
 	string path;
 	cout << "Insert letter: " << endl;
 	cin >> letter;
 	path = getCharPath(root,sizeOfTree,letter);
 	cout << "The path of " << letter << " is " << path << endl;
-
+	*/
  	/*
 	for(int i = weights.size()-1; i > 0; i--){
 		// cout << "Item " << i << " is " << weights[i].get_char() << " with a weight of " << weights[i].get_weight() << endl;
@@ -155,7 +190,7 @@ int main(){
 	return 0;
 }
 
-string getCharPath(node<double>* root, int sizeOfTree, char c){
+string getCharPath(node<double>* root, int sizeOfTree, string c){
 	string path = "";
 	char left = '0';
 	char right = '1';
@@ -189,7 +224,7 @@ string getCharPath(node<double>* root, int sizeOfTree, char c){
 void readWeights(string fileName, vector<node<double> > &weights, double &totalWeight){
 	//for line in file
 	ifstream infile;
-	char key;  			//first character is the data for node
+	string key;  			//first character is the data for node
 	double weight;
 	//second string is weight of character 
 	infile.open(fileName.c_str());
@@ -248,8 +283,22 @@ void sortVector(vector<node<double> > &weights){
 	}
 }
 
+void sortNodeVector(vector<node<double>* > &nodes){
+	int i, j;
+	node<double>* temp;
+	for(i = nodes.size() ; i > 0; i--){
+		for(j = 1; j < i; j++){
+			if(nodes[j-1]->get_weight() > nodes[j]->get_weight()){
+				temp = nodes[j-1];
+				nodes[j-1] = nodes[j];
+				nodes[j] = temp;
+			}
+		}
+	}
+}
+
 // THIS IS DIEGO'S METHOD
-void printPath(node<double>* root, char letter){
+void printPath(node<double>* root, string letter){
 	// cout << root->get_weight() << endl;
 	if(root == NULL){
 		cout << "End" << endl;
@@ -258,7 +307,7 @@ void printPath(node<double>* root, char letter){
 		if(root->isLeaf()){
 			// cout << "Leaf: " << root->get_char() 
 				 // << "\t weighs " << root->get_weight() << endl;
-			char curr =root->get_char();
+			string curr =root->get_char();
 			if(curr == letter){
 				int newNum = totalNum-(num/2);
 				for(int i = 0; i<(newNum-1); i++){
@@ -283,27 +332,27 @@ void printPath(node<double>* root, char letter){
 	//num =num/2;
 }
 
-
 void printTree(node<double>* root){
 	// cout << root->get_weight() << endl;
-	if(root == NULL){
-		cout << "End" << endl;
-	}
-	else{
-		if(root->isLeaf()){
-			cout << "Leaf: " << root->get_char()  << "\t weighs " << root->get_weight() << endl;
-
-		}
-		else{
+	if(root != NULL){
+		cout << "Root contents: "
+			 << root->get_char() << " "
+			 << root->get_weight() << endl;
+		if(root->left_child()){ 
+			cout << "Left" << endl; 
 			printTree(root->left_child());
+		}
+		if(root->right_child()){
+			cout << "Right" << endl;
 			printTree(root->right_child());
 		}
+		//cout << root->get_char() << endl;
 	}
 }
 
 void Decode(node<double> *root, string encoded){
 	 node<double>* ptrRoot;
-	 char finalCharacter;
+	 string finalCharacter;
 	 int size = 0;
 	 //cout << "this is root left_child: " << root->get_weight() << endl; 
 	 for (int i = 0; i < encoded.size(); i ++){
