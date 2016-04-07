@@ -9,12 +9,10 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<sstream>
-#include<unordered_map>
-#include<map>
+
 
 using namespace std;
-std::map<char, string> char_path;
-std::map<string, char> path_char;
+
 
 string getCharPath(node<double>* root, int sizeOfTree, string c);
 void Decode(node<double>* root, string encoded);
