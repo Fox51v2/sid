@@ -5,7 +5,7 @@ using namespace std;
 
 template<typename T> class node{
 	private:
-		char data;
+		string data;
 		T weight;
 		node* left;
 		node* right;
@@ -13,8 +13,8 @@ template<typename T> class node{
 	public:
 		node();
 		node(T w, node* L=NULL, node* R=NULL);
-		node(T w, char d, node* L=NULL, node* R=NULL);
-		char get_char();
+		node(T w, string d, node* L=NULL, node* R=NULL);
+		string get_char();
 		T get_weight();
 		void set_weight(T w);
 		node* left_child();
@@ -24,8 +24,8 @@ template<typename T> class node{
 		bool isLeaf();
 		void setBiNum(T x);
 		int getBiNum();
-		
 };
+
 template <typename T>
 void node<T>::setBiNum(T x){
 	biNum = x;
@@ -46,12 +46,12 @@ node<T>::node (T w,node* L,node* R){
 }
 
 template<typename T>
-node<T>::node(T w, char d, node* L, node* R){
+node<T>::node(T w, string d, node* L, node* R){
 	weight = w;	left = L; right = R; data = d;
 }
 
 template<typename T> 
-char node<T>::get_char(){
+string node<T>::get_char(){
 	return data;
 }
 
@@ -70,7 +70,7 @@ node<T>* node<T>::left_child(){
 	return left;
 }
 
-template<typename T> class 
+template<typename T>
 node<T>* node<T>::right_child(){
 	return right;
 }
