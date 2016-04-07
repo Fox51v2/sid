@@ -130,6 +130,19 @@ int main(){
 	path = getCharPath(root,sizeOfTree,letter);
 	cout << "The path of " << letter << " is " << path << endl;
 
+	FILE * dat = fopen ("data.dat", "wb");
+	fwrite (&path, sizeof(path), 1, dat);
+	fclose(dat);
+
+	dat = fopen("data.dat", "rb");
+	fread (&path, sizeof(path), 1, dat);
+	//char temp;
+	//while (!dat.eof()){
+	//	getline(dat, temp);
+	//	cout <<temp<<endl;
+	//}	
+	fclose(dat);
+
  	/*
 	for(int i = weights.size()-1; i > 0; i--){
 		// cout << "Item " << i << " is " << weights[i].get_char() << " with a weight of " << weights[i].get_weight() << endl;
