@@ -6,8 +6,15 @@
 #include"Path.cpp"
 #include<string>
 #include<algorithm>
+#include<stdio.h>
+#include<stdlib.h>
+#include<sstream>
+#include<unordered_map>
+#include<map>
 
 using namespace std;
+std::map<char, string> char_path;
+std::map<string, char> path_char;
 
 string getCharPath(node<double>* root, int sizeOfTree, string c);
 void Decode(node<double>* root, string encoded);
@@ -17,6 +24,13 @@ void sortVector(vector<node<double> > &weights);
 void sortNodeVector(vector<node<double>* > &nodes);
 void printTree(node<double>* root);
 void printPath(node<double>* root,string letter);
+void printCodes(struct node <double>* root, int arr[], int top);
+int isLeaf(struct node<double> * root);
+void printArr(int arr[], int n);
+int NumChar= 0 ;
+
+
+
 
 int main(){
 	cout << "Before!" << endl;
@@ -141,7 +155,7 @@ int main(){
 	cin >> letter;
 	path = getCharPath(root,sizeOfTree,letter);
 	cout << "The path of " << letter << " is " << path << endl;
-<<<<<<< HEAD
+
 
 	FILE * dat = fopen ("data.dat", "wb");
 	fwrite (&path, sizeof(path), 1, dat);
@@ -156,9 +170,8 @@ int main(){
 	//}	
 	fclose(dat);
 
-=======
+
 	*/
->>>>>>> 2cb5e8ce88d1f65cd781f8a1a625dc064406343d
  	/*
 	for(int i = weights.size()-1; i > 0; i--){
 		// cout << "Item " << i << " is " << weights[i].get_char() << " with a weight of " << weights[i].get_weight() << endl;
@@ -179,9 +192,56 @@ int main(){
 		//totalWeight += weights[i].get_weight();
 	}
 	*/
+	int arr[NumChar], top1 = 0;
+	printCodes(root, arr, top1);
 
 	cout << "End!" << endl;	
 	return 0;
+}
+int isLeaf(struct node<double> * root)
+{
+    return !(root->left_child()) && !(root->right_child()) ;
+}
+void printCodes(struct node<double>* root, int arr[], int top)
+{
+    // Assign 0 to left edge and recur
+    if (root->left_child())
+    {
+        arr[top] = 0;
+        printCodes(root->left_child(), arr, top + 1);
+    }
+ 
+    // Assign 1 to right edge and recur
+    if (root->right_child())
+    {
+        arr[top] = 1;
+        printCodes(root->right_child(), arr, top + 1);
+    }
+ 
+    // If this is a leaf node, then it contains one of the input
+    // characters, print the character and its code from arr[]
+    if (isLeaf(root))
+    {
+        cout << root->get_char() <<endl;
+        printArr(arr, top);
+    }
+}
+void printArr(int arr[], int n)
+{
+    int i;
+    string stringPath = "";
+    string text;
+    for (i = 0; i < n; ++i){
+    	int number = arr[i];
+    	string Result;
+    	ostringstream convert;
+    	convert << number;
+    	text = convert.str();
+    	stringPath += text;
+    }
+    cout << stringPath << endl;
+        //printf("%d", arr[i]);
+    //printf("\n");
 }
 
 string getCharPath(node<double>* root, int sizeOfTree, string c){
@@ -235,6 +295,7 @@ void readWeights(string fileName, vector<node<double> > &weights, double &totalW
 			node<double> tempnode = node<double>(weight, key);
 		//	cout << "About to push" << endl;
 			weights.push_back(tempnode);
+			NumChar ++;
 		}
 	}
 }
@@ -291,40 +352,6 @@ void sortNodeVector(vector<node<double>* > &nodes){
 	}
 }
 
-// THIS IS DIEGO'S METHOD
-void printPath(node<double>* root, string letter){
-	// cout << root->get_weight() << endl;
-	if(root == NULL){
-		cout << "End" << endl;
-	}
-	else{
-		if(root->isLeaf()){
-			// cout << "Leaf: " << root->get_char() 
-				 // << "\t weighs " << root->get_weight() << endl;
-			string curr =root->get_char();
-			if(curr == letter){
-				int newNum = totalNum-(num/2);
-				for(int i = 0; i<(newNum-1); i++){
-					if(i == 0){
-						path = "1";
-					}
-					else{
-						path = path + "0";
-					}
-				}
-				cout << "Path nigga! " << path << endl;
-			}
-
-		}
-		else{
-
-			printPath(root->left_child(),letter);
-			printPath(root->right_child(),letter);
-		}
-	}
-	num++;
-	//num =num/2;
-}
 
 void printTree(node<double>* root){
 	// cout << root->get_weight() << endl;
