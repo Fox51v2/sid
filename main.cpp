@@ -49,7 +49,7 @@ int main(){
 	//readPath(input, &path_vec);
 		
 	sortVector(weights);
- 	
+ 	/*
  	vector<node<double>* > nodes;
 	for(int i = 0; i < weights.size(); i++){
 		nodes.push_back(new node<double>(weights[i].get_weight(),weights[i].get_char(),NULL,NULL));
@@ -61,14 +61,17 @@ int main(){
 	int arr[sizeOfNewRoot], top = 0;
 	printCodes(newRoot, arr, top);
 	//cout << "Populated nodes vector" << endl;
+	*/
 
 	//node<double>* root = buildHuffmanTree(nodes,totalWeight);
 	//printTree(root);
-	//vector<node<double>* > tester;
-	//node<double>* test = treeFromTextFile("frequency.txt", tester);
-	//printTree(test);
-
-	//printCodes(test, arr, top);
+	vector<node<double>* > tester;
+	node<double>* test = treeFromTextFile("frequency.txt", tester);
+	printTree(test);
+	int sizeOfTest = 0;
+	treeSize(test,sizeOfTest);
+	int arr[sizeOfTest], top = 0;
+	printCodes(test, arr, top);
 
 /*
 	Decode(root,"1111");
@@ -76,7 +79,7 @@ int main(){
 	cout << "Past Decoding" << endl;
 	// Diego is sending the path to this function
 */
-	string path = encode(newRoot,"a");
+	string path = encode(test,"a");
 
 	FILE * dat = fopen ("data.dat", "wb");
 	fwrite (&path, sizeof(path), 1, dat);
@@ -92,9 +95,6 @@ int main(){
 	}*/	
 	fclose(dat);
 
-
-
-//	int arr[NumChar], top1 = 0;
 //	printCodes(root, arr, top1);
 
 	cout << "End!" << endl;	
@@ -205,7 +205,7 @@ void readPath(string fileName, vector<Path> *path_vec, int pathSize){
 		string temp;			
 		getline(infile, temp);
 		// cout << "This line: " << temp << endl;
-		if(temp != " "){
+		if(temp != ""){
 			string key = temp.substr(0, 1);
 			// cout << "Key: " << key << endl;
 			//pathBinary = atof(temp.substr(2).c_str());
