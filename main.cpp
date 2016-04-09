@@ -84,72 +84,7 @@ int main(){
 	Decode(root,"1111");
 	Decode(root,encode(root,"h"));
 	cout << "Past Decoding" << endl;
-	// Diego is sending the path to this function
-//printPath(root,letter);
-
-<<<<<<< HEAD
-/*
-	node<double>* currentConnection;
-	node<double>* smallest;
-	node<double>* nextSmallest;
-	for(int i = 0; i < weights.size(); i++){
-		double tempWeights;
-		if( i == 0){
-			smallest = weights[0];
-			nextSmallest = weights[1];
-			if(weights[i] < smallest){
-				smallest = weights[i];
-			
-			else if(weights[i] < nextSmallest){
-				nextSmallest = weights[i];
-			}
-			node* toAdd = node(smallest->get_weight() + nextSmallest->get_weight(), smallest, nextSmallest);	
-			currentConnection = nextSmallest;			
-		}
-		else{
-			smallest = currentConnection;
-		}
-
-		node* toAdd = node(smallest->get_weight() + nextSmallest->get_weight(), smallest, nextSmallest);
-	}
-*/
-	// for(double i = 0; i < pathSize; i++){
-	// 	cout << "Item " << i << " is "
-	// 		 << path_vec[i].get_data()
-	// 		 << " with a path of "  
-	// 		 << path_vec[i].get_path() << endl;
-	// }
-	/*
-	int count;
-	string path;
-	char letter;
-	cout << "Insert letter: " << endl;
-	cin >> letter;
-	path = getCharPath(root,sizeOfTree,letter);
-	cout << "The path of " << letter << " is " << path << endl;
-
-=======
->>>>>>> c6c123be4bae36672217df59461854c085c2b1cb
-
 	
-/*
-	FILE * dat = fopen ("data.dat", "wb");
-	fwrite (&path, sizeof(path), 1, dat);
-	fclose(dat);
-	
-	dat = fopen("data.dat", "rb");
-	fread (&path, sizeof(path), 1, dat);
-	//char temp;
-	//while (!dat.eof()){
-	//	getline(dat, temp);
-	//	cout <<temp<<endl;
-	//}	
-	fclose(dat);
-*/
-
-
-//	int arr[NumChar], top1 = 0;
-//	printCodes(root, arr, top1);
 
 	cout << "End!" << endl;	
 	return 0;
