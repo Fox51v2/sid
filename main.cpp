@@ -14,7 +14,7 @@
 using namespace std;
 
 
-string getCharPath(node<double>* root, int sizeOfTree, string c);
+string encode(node<double>* root, string c);
 void Decode(node<double>* root, string encoded);
 void readWeights(string fileName, vector<node<double> > &weights, double &totalWeight);
 void readPath(string fileName, vector<Path> *path_vec);
@@ -40,7 +40,7 @@ int main(){
 	vector<node<double> > weights;
 	double totalWeight = 0.0;
 	readWeights(input, weights, totalWeight);
-	cout << "Weights created" << endl;
+	//cout << "Weights created" << endl;
 	int sizeOfTree = weights.size();
 	//cout << "Enter the path file name: ";
 	//cin >> input;
@@ -52,8 +52,10 @@ int main(){
 	for(int i = 0; i < weights.size(); i++){
 		nodes.push_back(new node<double>(weights[i].get_weight(),weights[i].get_char(),NULL,NULL));
 	}
-	cout << "Populated nodes vector" << endl;
+	//cout << "Populated nodes vector" << endl;
 	
+
+
 	node<double>* newNode;
 	while(nodes[0]->get_weight() != totalWeight){
 		sortNodeVector(nodes);					//sort the vector
@@ -79,82 +81,15 @@ int main(){
 	node<double>* root = nodes[0];
 	printTree(root);
 
-	/*
-	node<double>* root;
-	double tempWeight;
-	node<double>* lastConnection;
-	for(int i = 0; i < sizeOfTree; i++){
-		if(i == 0){
-			node<double>* temp = new node<double>(weights[i].get_weight(),weights[i].get_char());
-			root = temp;
-			tempWeight += temp->get_weight();
-			root->setBiNum(0);
-		}
-		else{
-			node<double>* temp = new node<double>(weights[i].get_weight(),weights[i].get_char());
-			lastConnection = new node<double>(root->get_weight() + temp->get_weight(), root, temp);
-			root = lastConnection;
-			root->setBiNum(0);
-			temp->setBiNum(1);
-			tempWeight += temp->get_weight();
-
-			cout << "this is the binary on right child "<<root->getBiNum() <<endl;
-			cout << "this is the binary on right child "<<temp->getBiNum() <<endl;
-		}
-	}
-	*/
-	cout << "Stuff set?" << endl;
-/*
-	string letter;
-	cout << "Insert letter: " << endl;
-	cin >> letter;
-	printTree(root);
-*/
-	Decode(root,"0101");
-
+	Decode(root,"1111");
+	Decode(root,encode(root,"h"));
+	cout << "Past Decoding" << endl;
 	// Diego is sending the path to this function
 //printPath(root,letter);
 
+
+	
 /*
-	node<double>* currentConnection;
-	node<double>* smallest;
-	node<double>* nextSmallest;
-	for(int i = 0; i < weights.size(); i++){
-		double tempWeights;
-		if( i == 0){
-			smallest = weights[0];
-			nextSmallest = weights[1];
-			if(weights[i] < smallest){
-				smallest = weights[i];
-			
-			else if(weights[i] < nextSmallest){
-				nextSmallest = weights[i];
-			}
-			node* toAdd = node(smallest->get_weight() + nextSmallest->get_weight(), smallest, nextSmallest);	
-			currentConnection = nextSmallest;			
-		}
-		else{
-			smallest = currentConnection;
-		}
-
-		node* toAdd = node(smallest->get_weight() + nextSmallest->get_weight(), smallest, nextSmallest);
-	}
-*/
-	// for(double i = 0; i < pathSize; i++){
-	// 	cout << "Item " << i << " is "
-	// 		 << path_vec[i].get_data()
-	// 		 << " with a path of "  
-	// 		 << path_vec[i].get_path() << endl;
-	// }
-	/*
-	int count;
-	string path;
-	cout << "Insert letter: " << endl;
-	cin >> letter;
-	path = getCharPath(root,sizeOfTree,letter);
-	cout << "The path of " << letter << " is " << path << endl;
-
-
 	FILE * dat = fopen ("data.dat", "wb");
 	fwrite (&path, sizeof(path), 1, dat);
 	fclose(dat);
@@ -167,31 +102,11 @@ int main(){
 	//	cout <<temp<<endl;
 	//}	
 	fclose(dat);
+*/
 
 
-	*/
- 	/*
-	for(int i = weights.size()-1; i > 0; i--){
-		// cout << "Item " << i << " is " << weights[i].get_char() << " with a weight of " << weights[i].get_weight() << endl;
-		if(weights[i].get_char() == letter){
-			if(i==weights.size()){
-				path = "1";
-			}
-			else{
-				path.insert(0,"1"); 
-			}
-			cout << "Path nigga! " << path << endl;
-			break;
-		}
-		else{
-			path = path + "0";
-		}
-		count++;
-		//totalWeight += weights[i].get_weight();
-	}
-	*/
-	int arr[NumChar], top1 = 0;
-	printCodes(root, arr, top1);
+//	int arr[NumChar], top1 = 0;
+//	printCodes(root, arr, top1);
 
 	cout << "End!" << endl;	
 	return 0;
@@ -242,32 +157,24 @@ void printArr(int arr[], int n)
     //printf("\n");
 }
 
-string getCharPath(node<double>* root, int sizeOfTree, string c){
+string encode(node<double>* root, string c){
 	string path = "";
-	char left = '0';
-	char right = '1';
-	node<double>* lastRoot;
-	for(int i = 0; i < sizeOfTree ; i++){
-		if(root->right_child()->get_char() == c){
-			cout << "Added 1 -- i == size - 1 if" << endl;
-			path += right;
-			break;
-		}
-		else{
-			if(root->left_child()->get_char() == c){
-				cout << "Added 1 -- else if" << endl;
-				path += right;
-				break;
+	node<double>* lastRoot = root;
+	//cout << "Searching for " << c << endl;
+	while(lastRoot->get_char().length() != 1){				//while looking through the tree
+		if(lastRoot->right_child()->get_char().find(c) != string::npos){		//if the right child contains the letter
+			path += "1";
+			//cout << "Contents: " << lastRoot->get_char() << endl;											
+			if(lastRoot->right_child()){						
+				lastRoot = lastRoot->right_child();
 			}
-			else{
-				cout << "Added 0 -- else else if" << endl;
-				path += left;
-				if(root->left_child()){
-					lastRoot = root;
-					cout << "Changed root to left child" << endl;
-					root = root->left_child();
-				}
-			}			
+		}
+		else if(lastRoot->left_child()->get_char().find(c) != string::npos){	//if the left child contains the letter
+			path += "0";
+			//cout << "Contents: " << lastRoot->get_char() << endl;
+			if(lastRoot->left_child()){
+				lastRoot = lastRoot->left_child();
+			}
 		}
 	}
 	return path;	
@@ -383,8 +290,8 @@ void Decode(node<double>* root, string encoded){
  			if(ptrRoot->right_child())
  				ptrRoot = ptrRoot->right_child(); 	
 	 	}
-	 	cout << ptrRoot->get_char() << " ptrRoot contents <<" << endl;
+	 	//cout << ptrRoot->get_char() << " ptrRoot contents <<" << endl;
 	 }
 	 finalCharacter = ptrRoot->get_char();
-	 cout << "The decoded binary code is: " << finalCharacter << endl;
+	 //cout << "The decoded binary code is: " << finalCharacter << endl;
 }
