@@ -73,18 +73,9 @@ int main(){
 	Decode(root,encode(root,"h"));
 	cout << "Past Decoding" << endl;
 	// Diego is sending the path to this function
-<<<<<<< HEAD
-	//printPath(root,letter);
-*/	
-/*
-=======
-//printPath(root,letter);ZZ
+*/
+	string path = encode(test,"a");
 
-
-	// this is the working for writing and reading the bit into the file 
-	string path = encode(root, "a");
-	cout << "this is the path to a: " << path <<endl;
->>>>>>> ce635f11999d2460fe8983683170129c08e7468c
 	FILE * dat = fopen ("data.dat", "wb");
 	fwrite (&path, sizeof(path), 1, dat);
 	fclose(dat);
