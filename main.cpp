@@ -18,33 +18,32 @@ using namespace std;
 
 string encode(node<double>* root, string c);
 void Decode(node<double>* root, string encoded);
-void readWeights(string fileName, vector<node<double> > &weights, double &totalWeight);
+void readWeightsFile(string fileName, vector<node<double> > &weights, int sizeOfTree);
 void readPath(string fileName, vector<Path> *path_vec);
 void sortVector(vector<node<double> > &weights);
 void sortNodeVector(vector<node<double>* > &nodes);
 void printTree(node<double>* root);
 void printPath(node<double>* root,string letter);
-void printCodes(struct node <double>* root, int arr[], int top);
+void printCodes(struct node<double>* root, int arr[], int top);
 int isLeaf(struct node<double> * root);
 string getPath(int arr[], int n);
-node<double>* buildHuffmanTree(vector<node<double>* > &nodeVector, double totalWeight);
+node<double>* buildHuffmanTree(vector<node<double>* > &nodeVector);
 bool charAlreadyEncountered(vector<node<double>* > nodes, string s);
 int nodeIndexOf(vector<node<double>* > nodes, string c);
 node<double>* treeFromTextFile(string filename, vector<node<double>* > &nodes);
-int NumChar;
+void treeSize(node<double>* root, int &size);
 
 int main(){
 	cout << "Before!" << endl;
-	string input;
+	string weightsFile;
 	cout << "Enter the weights file name: ";
-	cin >> input; 
+	cin >> weightsFile; 
 	node<double>* first;
 	vector<Path> path_vec;
 	vector<node<double> > weights;
-	double totalWeight = 0.0;
-	readWeights(input, weights, totalWeight);
+	int sizeOfTree = 0;
+	readWeightsFile(weightsFile, weights, sizeOfTree);
 	//cout << "Weights created" << endl;
-	int sizeOfTree = weights.size();
 	//cout << "Enter the path file name: ";
 	//cin >> input;
 	//readPath(input, &path_vec);
@@ -55,18 +54,21 @@ int main(){
 	for(int i = 0; i < weights.size(); i++){
 		nodes.push_back(new node<double>(weights[i].get_weight(),weights[i].get_char(),NULL,NULL));
 	}
+	node<double>* newRoot = buildHuffmanTree(nodes);
+	int sizeOfNewRoot = 0;
+	treeSize(newRoot, sizeOfNewRoot);
+	printTree(newRoot);
+	int arr[sizeOfNewRoot], top = 0;
+	printCodes(newRoot, arr, top);
 	//cout << "Populated nodes vector" << endl;
 
 	//node<double>* root = buildHuffmanTree(nodes,totalWeight);
 	//printTree(root);
-	vector<node<double>* > tester;
-	node<double>* test = treeFromTextFile("frequency.txt", tester);
-	printTree(test);
+	//vector<node<double>* > tester;
+	//node<double>* test = treeFromTextFile("frequency.txt", tester);
+	//printTree(test);
 
-
-
-	int arr[NumChar], top = 0;
-	printCodes(test, arr, top);
+	//printCodes(test, arr, top);
 
 /*
 	Decode(root,"1111");
@@ -74,7 +76,7 @@ int main(){
 	cout << "Past Decoding" << endl;
 	// Diego is sending the path to this function
 */
-	string path = encode(test,"a");
+	string path = encode(newRoot,"a");
 
 	FILE * dat = fopen ("data.dat", "wb");
 	fwrite (&path, sizeof(path), 1, dat);
@@ -98,13 +100,12 @@ int main(){
 	cout << "End!" << endl;	
 	return 0;
 }
-int isLeaf(struct node<double> * root)
-{
+
+int isLeaf(struct node<double> * root){
     return !(root->left_child()) && !(root->right_child()) ;
 }
 
-void printCodes(struct node<double>* root, int arr[], int top)
-{
+void printCodes(struct node<double>* root, int arr[], int top){
     // Assign 0 to left edge and recur
     if (root->left_child())
     {
@@ -170,7 +171,7 @@ string encode(node<double>* root, string c){
 	return path;	
 }
 
-void readWeights(string fileName, vector<node<double> > &weights, double &totalWeight){
+void readWeightsFile(string fileName, vector<node<double> > &weights, int size){
 	//for line in file
 	ifstream infile;
 	string key;  			//first character is the data for node
@@ -185,12 +186,11 @@ void readWeights(string fileName, vector<node<double> > &weights, double &totalW
 			key = temp[0];
 			//cout << "Key: " << key << endl;
 			weight = atof(temp.substr(2,temp.size()-1).c_str());
-			totalWeight += weight;
 			//cout << "weight: " << weight<<endl;
 			node<double> tempnode = node<double>(weight, key);
 		//	cout << "About to push" << endl;
 			weights.push_back(tempnode);
-			NumChar ++;
+			size++;
 		}
 	}
 }
@@ -201,7 +201,7 @@ void readPath(string fileName, vector<Path> *path_vec, int pathSize){
 	//sting key;		//first character is the data for node
 	double 	pathBinary = 0;		//second string is path of character 
 	infile.open(fileName.c_str());
-	while(!infile.eof()){
+	while(infile.get() != infile.eof()){
 		string temp;			
 		getline(infile, temp);
 		// cout << "This line: " << temp << endl;
@@ -249,7 +249,7 @@ void sortNodeVector(vector<node<double>* > &nodes){
 
 void printTree(node<double>* root){
 	// cout << root->get_weight() << endl;
-	if(root != NULL){
+	if(root){
 		cout << "Root contents: "
 			 << root->get_char() << " "
 			 << root->get_weight() << endl;
@@ -283,21 +283,13 @@ void Decode(node<double>* root, string encoded){
 	 //cout << "The decoded binary code is: " << finalCharacter << endl;
 }
 
-node<double>* buildHuffmanTree(vector<node<double>* > &nodeVector, double totalWeight){
+//build a tree, given a vector of node pointers
+node<double>* buildHuffmanTree(vector<node<double>* > &nodeVector){
 	node<double>* newNode;
-	while(nodeVector[0]->get_weight() != totalWeight){
+	while(nodeVector.size() > 1){
 		sortNodeVector(nodeVector);					//sort the vector
 		node<double>* smallest = nodeVector[0]; 		//the last item is smallest
 		node<double>* nextSmallest = nodeVector[1];	//the second to last item is next smallest
-		/*
-		cout << "Building new node..." << endl;
-		cout << "From characters: " 
-				<< smallest->get_char() << " and "
-				<< nextSmallest->get_char() << endl;
-		cout << "From weights: "
-				<< smallest->get_weight() << " and "
-				<< nextSmallest->get_weight() << endl;
-		*/
 		newNode = new node<double>(smallest->get_weight()+nextSmallest->get_weight(),
 					smallest->get_char()+nextSmallest->get_char(), smallest,nextSmallest);	//make a new node
 		nodeVector.erase(nodeVector.begin());						//we used smallest already
@@ -308,6 +300,7 @@ node<double>* buildHuffmanTree(vector<node<double>* > &nodeVector, double totalW
 	return nodeVector[0];
 }
 
+//determines if character is already in vector
 bool charAlreadyEncountered(vector<node<double>* > nodes, string s){
 	for(int i = 0; i < nodes.size(); i++){
 		if(nodes[i]->get_char().compare(s) == 0){
@@ -317,6 +310,7 @@ bool charAlreadyEncountered(vector<node<double>* > nodes, string s){
 	return false;
 }
 
+//returns index of character in vector
 int nodeIndexOf(vector<node<double>* > nodes, string c){
 	for(int i = 0; i < nodes.size(); i++){
 		if(nodes[i]->get_char().compare(c) == 0){
@@ -326,13 +320,25 @@ int nodeIndexOf(vector<node<double>* > nodes, string c){
 	return -1;
 }
 
+//
+void treeSize(node<double>* root, int &size){
+	if(root->isLeaf()){
+		size++;
+	}
+	else{
+		treeSize(root->left_child(),size);
+		treeSize(root->right_child(),size);
+	}
+}
+
 node<double>* treeFromTextFile(string filename, vector<node<double>* > &nodes){
 	ifstream infile;
 	infile.open(filename.c_str());
 	char nextChar;
-	while(infile >> nextChar){
+	while(infile.get(nextChar) && nextChar != infile.eof()){
 		string thisChar;
 		stringstream ss;
+		ss >> noskipws;
 		ss << nextChar;
 		ss >> thisChar;
 		if(!charAlreadyEncountered(nodes, thisChar)){
@@ -343,9 +349,5 @@ node<double>* treeFromTextFile(string filename, vector<node<double>* > &nodes){
 			nodes[nodeIndexOf(nodes, thisChar)]->inc_Weight();
 		}
 	}
-	double totalWeight = 0.0;
-	for(int i = 0; i < nodes.size(); i++){
-		totalWeight += nodes[i]->get_weight();
-	}
-	return buildHuffmanTree(nodes,totalWeight);
+	return buildHuffmanTree(nodes);
 }
