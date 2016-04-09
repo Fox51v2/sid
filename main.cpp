@@ -24,7 +24,7 @@ void printTree(node<double>* root);
 void printPath(node<double>* root,string letter);
 void printCodes(struct node <double>* root, int arr[], int top);
 int isLeaf(struct node<double> * root);
-void printArr(int arr[], int n);
+string getPath(int arr[], int n);
 int NumChar= 0 ;
 
 
@@ -149,6 +149,7 @@ int main(){
 	/*
 	int count;
 	string path;
+	char letter;
 	cout << "Insert letter: " << endl;
 	cin >> letter;
 	path = getCharPath(root,sizeOfTree,letter);
@@ -158,7 +159,7 @@ int main(){
 	FILE * dat = fopen ("data.dat", "wb");
 	fwrite (&path, sizeof(path), 1, dat);
 	fclose(dat);
-
+	
 	dat = fopen("data.dat", "rb");
 	fread (&path, sizeof(path), 1, dat);
 	//char temp;
@@ -221,10 +222,11 @@ void printCodes(struct node<double>* root, int arr[], int top)
     if (isLeaf(root))
     {
         cout << root->get_char() <<endl;
-        printArr(arr, top);
+        string temp; 
+        temp = getPath(arr, top);
     }
 }
-void printArr(int arr[], int n)
+string getPath(int arr[], int n)
 {
     int i;
     string stringPath = "";
@@ -238,6 +240,7 @@ void printArr(int arr[], int n)
     	stringPath += text;
     }
     cout << stringPath << endl;
+    return stringPath;
         //printf("%d", arr[i]);
     //printf("\n");
 }
