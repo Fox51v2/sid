@@ -5,7 +5,6 @@
 #include<vector>
 #include"node.h"
 #include"Path.cpp"
-#include"charFreq.h"
 #include<string>
 #include<algorithm>
 #include<stdio.h>
