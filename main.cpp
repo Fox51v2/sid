@@ -34,7 +34,9 @@ node<double>* treeFromTextFile(string filename, vector<node<double>* > &nodes);
 void treeSize(node<double>* root, int &size);
 
 int main(){
-	cout << "Before!" << endl;
+	
+
+
 	string weightsFile;
 	cout << "Enter the weights file name: ";
 	cin >> weightsFile; 
@@ -49,37 +51,41 @@ int main(){
 	//readPath(input, &path_vec);
 		
 	sortVector(weights);
- 	/*
+ 	
  	vector<node<double>* > nodes;
 	for(int i = 0; i < weights.size(); i++){
 		nodes.push_back(new node<double>(weights[i].get_weight(),weights[i].get_char(),NULL,NULL));
 	}
+	cout << "Weights size: " << weights.size() << endl;
 	node<double>* newRoot = buildHuffmanTree(nodes);
 	int sizeOfNewRoot = 0;
 	treeSize(newRoot, sizeOfNewRoot);
+	cout << "sizeOfNewRoot: " << sizeOfNewRoot << endl;
 	printTree(newRoot);
 	int arr[sizeOfNewRoot], top = 0;
 	printCodes(newRoot, arr, top);
 	//cout << "Populated nodes vector" << endl;
-	*/
+	
 
 	//node<double>* root = buildHuffmanTree(nodes,totalWeight);
 	//printTree(root);
+	/*
 	vector<node<double>* > tester;
 	node<double>* test = treeFromTextFile("frequency.txt", tester);
 	printTree(test);
 	int sizeOfTest = 0;
 	treeSize(test,sizeOfTest);
-	int arr[sizeOfTest], top = 0;
-	printCodes(test, arr, top);
-
+	int testArr[sizeOfTest];
+	printCodes(test, testArr, top);
+*/
 /*
 	Decode(root,"1111");
 	Decode(root,encode(root,"h"));
 	cout << "Past Decoding" << endl;
 	// Diego is sending the path to this function
 */
-	string path = encode(test,"a");
+	//string path = encode(test,"a");
+	string path = encode(newRoot," ");
 
 	FILE * dat = fopen ("data.dat", "wb");
 	fwrite (&path, sizeof(path), 1, dat);
@@ -251,7 +257,7 @@ void printTree(node<double>* root){
 	// cout << root->get_weight() << endl;
 	if(root){
 		cout << "Root contents: "
-			 << root->get_char() << " "
+			 << root->get_char() << "-"
 			 << root->get_weight() << endl;
 		if(root->left_child()){ 
 		//	cout << "Left" << endl; 
@@ -320,14 +326,13 @@ int nodeIndexOf(vector<node<double>* > nodes, string c){
 	return -1;
 }
 
-//
 void treeSize(node<double>* root, int &size){
 	if(root->isLeaf()){
 		size++;
 	}
 	else{
-		treeSize(root->left_child(),size);
-		treeSize(root->right_child(),size);
+		treeSize(root->left_child(), size);
+		treeSize(root->right_child(), size);
 	}
 }
 
