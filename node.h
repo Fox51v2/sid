@@ -12,11 +12,13 @@ template<typename T> class node{
 		int biNum;
 	public:
 		node();
+		node(string d, T w = 0, node* L =NULL, node* R=NULL);
 		node(T w, node* L=NULL, node* R=NULL);
 		node(T w, string d, node* L=NULL, node* R=NULL);
 		string get_char();
 		T get_weight();
 		void set_weight(T w);
+		void inc_Weight(){ weight += 1; }
 		node* left_child();
 		node* right_child();
 		void set_left(node* L);
@@ -24,12 +26,27 @@ template<typename T> class node{
 		bool isLeaf();
 		void setBiNum(T x);
 		int getBiNum();
+		int treeSize();
 };
+
+template <typename T>
+int node<T>::treeSize(){
+	int size;
+	if(this->isLeaf()){
+		size++;
+	}
+	else{
+		size += this->left_child()->treeSize();
+		size += this->right_child()->treeSize();
+	}
+	return size;
+}
 
 template <typename T>
 void node<T>::setBiNum(T x){
 	biNum = x;
 }
+
 template <typename T>
 int node<T>:: getBiNum(){
 	return biNum;
@@ -40,6 +57,12 @@ node<T>::node(){
 	left,right = NULL;
 
 }
+
+template<typename T>
+node<T>::node(string d, T w, node* L, node* R){
+	data = d; weight = w; left = L; right = R;
+}
+
 template<typename T>
 node<T>::node (T w,node* L,node* R){
 	weight = w; left = L; right = R;
