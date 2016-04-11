@@ -84,9 +84,7 @@ int main(){
 	Decode(root,"1111");
 	Decode(root,encode(root,"h"));
 	cout << "Past Decoding" << endl;
-<<<<<<< HEAD
-	
-=======
+
 	// Diego is sending the path to this function
 //printPath(root,letter);ZZ
 
@@ -95,11 +93,11 @@ int main(){
 	string path = encode(root, "a");
 	cout << "this is the path to a: " << path <<endl;
 	FILE * dat = fopen ("data.dat", "wb");
-	fwrite (&path, sizeof(path), 1, dat);
+	fwrite (&path, sizeof(unsigned char), 1, dat);
 	fclose(dat);
 
 	dat = fopen("data.dat", "rb");
-	fread (&path, sizeof(path), 1, dat);
+	fread (&path, sizeof(unsigned char), 1, dat);
 	cout << "this is the path after decoding "<<path << endl;
 	/*string temp;
 	while (!dat.eof()){
@@ -112,7 +110,6 @@ int main(){
 
 //	int arr[NumChar], top1 = 0;
 //	printCodes(root, arr, top1);
->>>>>>> ce635f11999d2460fe8983683170129c08e7468c
 
 	cout << "End!" << endl;	
 	return 0;
