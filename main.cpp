@@ -11,9 +11,7 @@
 #include<stdlib.h>
 #include<sstream>
 
-
 using namespace std;
-
 
 string encode(node<double>* root, string c);
 void Decode(node<double>* root, string encoded);
@@ -29,7 +27,7 @@ string getPath(int arr[], int n);
 node<double>* buildHuffmanTree(vector<node<double>* > &nodeVector);
 bool charAlreadyEncountered(vector<node<double>* > nodes, string s);
 int nodeIndexOf(vector<node<double>* > nodes, string c);
-node<double>* treeFromTextFile(string filename);
+node<double>* treeFromTextFile(string filename,vector<node<double>* > &nodes);
 void treeSize(node<double>* root, int &size);
 
 int main(){
@@ -44,7 +42,8 @@ int main(){
 	printTree(weightsRoot);
 
 	cout << "Enter 1 to compress a text file." << endl;
-		cout << "Enter 2 to decompress a Huffman encoded file." << endl;
+	cout << "Enter 2 to decompress a Huffman encoded file." << endl;
+	
 	int option;
 	while(cin >> option){
 		
@@ -53,7 +52,8 @@ int main(){
 			cout << "Enter the name of the text file to compress." << endl;
 			string textFileName;
 			cin >> textFileName;
-			node<double>* textFileRoot = treeFromTextFile(textFileName);
+			vector<node<double>* > nodes = vector<node<double>*>();
+			node<double>* textFileRoot = treeFromTextFile(textFileName,nodes);
 			cout << "Built tree" << endl;
 			printTree(textFileRoot);
 			break;
@@ -315,24 +315,23 @@ void treeSize(node<double>* root, int &size){
 	}
 }
 
-node<double>* treeFromTextFile(string filename){
-	vector<node<double>* > nodes;
+node<double>* treeFromTextFile(string filename,vector<node<double>*> &nodes){
+	
 	ifstream infile;
 	infile.open(filename.c_str());
 	char nextChar;
+	infile >> noskipws;
 	while(infile.get(nextChar) && nextChar != infile.eof()){
 		string thisChar;
-		stringstream ss;
-		ss >> noskipws;
-		ss << nextChar;
-		ss >> thisChar;
+		thisChar += nextChar;
 		if(!charAlreadyEncountered(nodes, thisChar)){
 			node<double>* temp = new node<double>(1,thisChar);
 			nodes.push_back(temp);
 		}
-		else if(charAlreadyEncountered){
+		else if(charAlreadyEncountered(nodes,thisChar)){
 			nodes[nodeIndexOf(nodes, thisChar)]->inc_Weight();
 		}
 	}
+
 	return buildHuffmanTree(nodes);
 }

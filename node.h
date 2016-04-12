@@ -18,7 +18,7 @@ template<typename T> class node{
 		string get_char();
 		T get_weight();
 		void set_weight(T w);
-		void inc_Weight(){ weight += 1; }
+		void inc_Weight(){ weight++; }
 		node* left_child();
 		node* right_child();
 		void set_left(node* L);
