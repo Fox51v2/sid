@@ -26,21 +26,7 @@ template<typename T> class node{
 		bool isLeaf();
 		void setBiNum(T x);
 		int getBiNum();
-		int treeSize();
 };
-
-template <typename T>
-int node<T>::treeSize(){
-	int size;
-	if(this->isLeaf()){
-		size++;
-	}
-	else{
-		size += this->left_child()->treeSize();
-		size += this->right_child()->treeSize();
-	}
-	return size;
-}
 
 template <typename T>
 void node<T>::setBiNum(T x){

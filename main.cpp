@@ -29,19 +29,46 @@ string getPath(int arr[], int n);
 node<double>* buildHuffmanTree(vector<node<double>* > &nodeVector);
 bool charAlreadyEncountered(vector<node<double>* > nodes, string s);
 int nodeIndexOf(vector<node<double>* > nodes, string c);
-node<double>* treeFromTextFile(string filename, vector<node<double>* > &nodes);
+node<double>* treeFromTextFile(string filename);
 void treeSize(node<double>* root, int &size);
 
 int main(){
-	
-
-
-	string weightsFile;
+		
 	cout << "Enter the weights file name: ";
 	// 1.1 Takes a weight file as input
+	string weightsFile;
 	cin >> weightsFile; 
 
 	node<double>* weightsRoot = weightsFileToTree(weightsFile);
+
+	printTree(weightsRoot);
+
+	cout << "Enter 1 to compress a text file." << endl;
+		cout << "Enter 2 to decompress a Huffman encoded file." << endl;
+	int option;
+	while(cin >> option){
+		
+		if(option == 1){
+			//encode text file
+			cout << "Enter the name of the text file to compress." << endl;
+			string textFileName;
+			cin >> textFileName;
+			node<double>* textFileRoot = treeFromTextFile(textFileName);
+			cout << "Built tree" << endl;
+			printTree(textFileRoot);
+			break;
+		}
+		else if(option == 2){
+			//decode a Huffman encoded file
+			break;
+		}
+		else{
+			cout << "Please select another option." << endl;
+			cout << "Enter 1 to compress a text file." << endl;
+			cout << "Enter 2 to decompress a Huffman encoded file." << endl;
+		}
+	}
+
 
 	int sizeOfNewRoot = 0;
 	treeSize(weightsRoot, sizeOfNewRoot);
@@ -288,7 +315,8 @@ void treeSize(node<double>* root, int &size){
 	}
 }
 
-node<double>* treeFromTextFile(string filename, vector<node<double>* > &nodes){
+node<double>* treeFromTextFile(string filename){
+	vector<node<double>* > nodes;
 	ifstream infile;
 	infile.open(filename.c_str());
 	char nextChar;
