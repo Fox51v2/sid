@@ -17,7 +17,7 @@ using namespace std;
 
 string encode(node<double>* root, string c);
 void Decode(node<double>* root, string encoded);
-void readWeightsFile(string fileName, vector<node<double> > &weights, int sizeOfTree);
+node<double>* weightsFileToTree(string fileName);
 void readPath(string fileName, vector<Path> *path_vec);
 void sortVector(vector<node<double> > &weights);
 void sortNodeVector(vector<node<double>* > &nodes);
@@ -38,53 +38,19 @@ int main(){
 
 	string weightsFile;
 	cout << "Enter the weights file name: ";
+	// 1.1 Takes a weight file as input
 	cin >> weightsFile; 
-	node<double>* first;
-	vector<Path> path_vec;
-	vector<node<double> > weights;
-	int sizeOfTree = 0;
-	readWeightsFile(weightsFile, weights, sizeOfTree);
-	//cout << "Weights created" << endl;
-	//cout << "Enter the path file name: ";
-	//cin >> input;
-	//readPath(input, &path_vec);
-		
-	sortVector(weights);
- 	
- 	vector<node<double>* > nodes;
-	for(int i = 0; i < weights.size(); i++){
-		nodes.push_back(new node<double>(weights[i].get_weight(),weights[i].get_char(),NULL,NULL));
-	}
-	cout << "Weights size: " << weights.size() << endl;
-	node<double>* newRoot = buildHuffmanTree(nodes);
-	int sizeOfNewRoot = 0;
-	treeSize(newRoot, sizeOfNewRoot);
-	cout << "sizeOfNewRoot: " << sizeOfNewRoot << endl;
-	printTree(newRoot);
-	int arr[sizeOfNewRoot], top = 0;
-	printCodes(newRoot, arr, top);
-	//cout << "Populated nodes vector" << endl;
-	
 
-	//node<double>* root = buildHuffmanTree(nodes,totalWeight);
-	//printTree(root);
-	/*
-	vector<node<double>* > tester;
-	node<double>* test = treeFromTextFile("frequency.txt", tester);
-	printTree(test);
-	int sizeOfTest = 0;
-	treeSize(test,sizeOfTest);
-	int testArr[sizeOfTest];
-	printCodes(test, testArr, top);
-*/
-/*
-	Decode(root,"1111");
-	Decode(root,encode(root,"h"));
-	cout << "Past Decoding" << endl;
-	// Diego is sending the path to this function
-*/
-	//string path = encode(test,"a");
-	string path = encode(newRoot," ");
+	node<double>* weightsRoot = weightsFileToTree(weightsFile);
+
+	int sizeOfNewRoot = 0;
+	treeSize(weightsRoot, sizeOfNewRoot);
+	
+	//printTree(weightsRoot);
+	int arr[sizeOfNewRoot], top = 0;
+	//printCodes(weightsRoot, arr, top);
+	
+	string path = encode(weightsRoot," ");
 
 	FILE * dat = fopen ("data.dat", "wb");
 	fwrite (&path, sizeof(path), 1, dat);
@@ -92,15 +58,10 @@ int main(){
 
 	dat = fopen("data.dat", "rb");
 	fread (&path, sizeof(path), 1, dat);
-	cout << "this is the path after decoding "<<path << endl;
-	/*string temp;
-	while (!dat.eof()){
-		getline(dat, temp);
-		cout <<temp<<endl;
-	}*/	
+	//cout << "this is the path after decoding "<<path << endl;
+	
 	fclose(dat);
 
-//	printCodes(root, arr, top1);
 
 	cout << "End!" << endl;	
 	return 0;
@@ -156,18 +117,15 @@ string getPath(int arr[], int n)
 string encode(node<double>* root, string c){
 	string path = "";
 	node<double>* lastRoot = root;
-	//cout << "Searching for " << c << endl;
 	while(lastRoot->get_char().length() != 1){				//while looking through the tree
 		if(lastRoot->right_child()->get_char().find(c) != string::npos){		//if the right child contains the letter
 			path += "1";
-			//cout << "Contents: " << lastRoot->get_char() << endl;											
 			if(lastRoot->right_child()){						
 				lastRoot = lastRoot->right_child();
 			}
 		}
 		else if(lastRoot->left_child()->get_char().find(c) != string::npos){	//if the left child contains the letter
 			path += "0";
-			//cout << "Contents: " << lastRoot->get_char() << endl;
 			if(lastRoot->left_child()){
 				lastRoot = lastRoot->left_child();
 			}
@@ -176,7 +134,10 @@ string encode(node<double>* root, string c){
 	return path;	
 }
 
-void readWeightsFile(string fileName, vector<node<double> > &weights, int size){
+node<double>* weightsFileToTree(string fileName){
+	
+	vector<node<double> > weights;
+
 	//for line in file
 	ifstream infile;
 	string key;  			//first character is the data for node
@@ -186,18 +147,21 @@ void readWeightsFile(string fileName, vector<node<double> > &weights, int size){
 	while(!infile.eof()){
 		string temp;			
 		getline(infile, temp);
-		//cout << "This line: " << temp << endl;
 		if(temp != ""){
 			key = temp[0];
-			//cout << "Key: " << key << endl;
 			weight = atof(temp.substr(2,temp.size()-1).c_str());
-			//cout << "weight: " << weight<<endl;
 			node<double> tempnode = node<double>(weight, key);
-		//	cout << "About to push" << endl;
 			weights.push_back(tempnode);
-			size++;
 		}
 	}
+	sortVector(weights);
+ 	
+ 	vector<node<double>* > nodes;
+	for(int i = 0; i < weights.size(); i++){
+		nodes.push_back(new node<double>(weights[i].get_weight(),weights[i].get_char(),NULL,NULL));
+	}
+	//cout << "Weights size: " << weights.size() << endl;
+	return buildHuffmanTree(nodes);
 }
 
 void readPath(string fileName, vector<Path> *path_vec, int pathSize){
@@ -209,18 +173,13 @@ void readPath(string fileName, vector<Path> *path_vec, int pathSize){
 	while(infile.get() != infile.eof()){
 		string temp;			
 		getline(infile, temp);
-		// cout << "This line: " << temp << endl;
 		if(temp != ""){
 			string key = temp.substr(0, 1);
-			// cout << "Key: " << key << endl;
-			//pathBinary = atof(temp.substr(2).c_str());
 			pathBinary= atof(temp.substr(1).c_str());
-			// cout <<setprecision(4) << "pathBinary: " << pathBinary <<endl;
 			Path tempPath = Path(key, pathBinary);
 			path_vec->push_back(tempPath);
 			pathSize ++;
 		}
-		// cout <<"Path size is " << pathSize<<endl;
 	}	
 }
 
@@ -253,20 +212,16 @@ void sortNodeVector(vector<node<double>* > &nodes){
 }
 
 void printTree(node<double>* root){
-	// cout << root->get_weight() << endl;
 	if(root){
 		cout << "Root contents: "
 			 << root->get_char() << "-"
 			 << root->get_weight() << endl;
 		if(root->left_child()){ 
-		//	cout << "Left" << endl; 
 			printTree(root->left_child());
 		}
 		if(root->right_child()){
-		//	cout << "Right" << endl;
 			printTree(root->right_child());
 		}
-		//cout << root->get_char() << endl;
 	}
 }
 
@@ -282,10 +237,8 @@ void Decode(node<double>* root, string encoded){
  			if(ptrRoot->right_child())
  				ptrRoot = ptrRoot->right_child(); 	
 	 	}
-	 	//cout << ptrRoot->get_char() << " ptrRoot contents <<" << endl;
 	 }
 	 finalCharacter = ptrRoot->get_char();
-	 //cout << "The decoded binary code is: " << finalCharacter << endl;
 }
 
 //build a tree, given a vector of node pointers
