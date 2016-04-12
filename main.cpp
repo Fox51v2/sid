@@ -26,16 +26,16 @@ void printPath(node<double>* root,string letter);
 void printCodes(struct node<double>* root, int arr[], int top);
 int isLeaf(struct node<double> * root);
 string getPath(int arr[], int n);
-<<<<<<< HEAD
-int NumChar= 0 ;
+//<<<<<<< HEAD
+//int NumChar= 0 ;
 
-=======
+//=======
 node<double>* buildHuffmanTree(vector<node<double>* > &nodeVector);
 bool charAlreadyEncountered(vector<node<double>* > nodes, string s);
 int nodeIndexOf(vector<node<double>* > nodes, string c);
 node<double>* treeFromTextFile(string filename, vector<node<double>* > &nodes);
 void treeSize(node<double>* root, int &size);
->>>>>>> 53c50c4b5db44251ee4b07ebff3390b821a90e03
+//>>>>>>> 53c50c4b5db44251ee4b07ebff3390b821a90e03
 
 int main(){
 	
@@ -136,19 +136,19 @@ void printCodes(struct node<double>* root, int arr[], int top){
     if (isLeaf(root))
     {
         cout << root->get_char() <<endl;
-<<<<<<< HEAD
-        string temp; 
-=======
+//<<<<<<< HEAD
+        //string temp; 
+//=======
         string temp;
->>>>>>> 53c50c4b5db44251ee4b07ebff3390b821a90e03
+//>>>>>>> 53c50c4b5db44251ee4b07ebff3390b821a90e03
         temp = getPath(arr, top);
     }
     //return temp;
 }
-<<<<<<< HEAD
-=======
+//<<<<<<< HEAD
+//=======
 
->>>>>>> 53c50c4b5db44251ee4b07ebff3390b821a90e03
+//>>>>>>> 53c50c4b5db44251ee4b07ebff3390b821a90e03
 string getPath(int arr[], int n)
 {
     int i;
@@ -164,11 +164,11 @@ string getPath(int arr[], int n)
     }
     cout << stringPath << endl;
     return stringPath;
-<<<<<<< HEAD
+//<<<<<<< HEAD
         //printf("%d", arr[i]);
     //printf("\n");
-=======
->>>>>>> 53c50c4b5db44251ee4b07ebff3390b821a90e03
+//=======
+//>>>>>>> 53c50c4b5db44251ee4b07ebff3390b821a90e03
 }
 
 string encode(node<double>* root, string c){
