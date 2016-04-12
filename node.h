@@ -18,7 +18,7 @@ template<typename T> class node{
 		string get_char();
 		T get_weight();
 		void set_weight(T w);
-		void inc_Weight(){ weight += 1; }
+		void inc_Weight(){ weight++; }
 		node* left_child();
 		node* right_child();
 		void set_left(node* L);
@@ -26,21 +26,7 @@ template<typename T> class node{
 		bool isLeaf();
 		void setBiNum(T x);
 		int getBiNum();
-		int treeSize();
 };
-
-template <typename T>
-int node<T>::treeSize(){
-	int size;
-	if(this->isLeaf()){
-		size++;
-	}
-	else{
-		size += this->left_child()->treeSize();
-		size += this->right_child()->treeSize();
-	}
-	return size;
-}
 
 template <typename T>
 void node<T>::setBiNum(T x){
