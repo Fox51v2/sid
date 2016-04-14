@@ -24,13 +24,14 @@ void sortNodeVector(vector<node<double>* > &nodes);
 void printWeightsFile(node<double>* root, int &position);
 void printPath(node<double>* root,string letter);
 void printCodes(struct node<double>* root, int arr[], int top);
-int isLeaf(struct node<double> * root);
 string getPath(int arr[], int n);
 node<double>* buildHuffmanTree(vector<node<double>* > &nodeVector);
 bool charAlreadyEncountered(vector<node<double>* > nodes, string s);
 int nodeIndexOf(vector<node<double>* > nodes, string c);
 node<double>* treeFromTextFile(string filename, vector<node<double>* > &nodes);
 void treeSize(node<double>* root, int &size);
+void compressToFile(node<double>* root);
+
 
 int main(){
 	string compressFile;
@@ -65,52 +66,38 @@ int main(){
 	// //printTree(weightsRoot);
 	// int arr[sizeOfNewRoot], top = 0;
 	// //printCodes(weightsRoot, arr, top);
+
+	compressToFile(textFileRoot);
+	/*
+	dat = fopen("data.dat", "rb");
+	fread (&path, sizeof(path), 1, dat);
+	cout << "this is the path after decoding "<<path << endl;
 	
-	// string path = encode(weightsRoot," ");
-
-	// FILE * dat = fopen ("data.dat", "wb");
-	// fwrite (&path, sizeof(path), 1, dat);
-	// fclose(dat);
-
-	// dat = fopen("data.dat", "rb");
-	// fread (&path, sizeof(path), 1, dat);
-	// //cout << "this is the path after decoding "<<path << endl;
-	
-	// fclose(dat);
-
+	fclose(dat);
+	*/
 
 	cout << "End!" << endl;	
 	return 0;
 }
 
-int isLeaf(struct node<double> * root){
-    return !(root->left_child()) && !(root->right_child()) ;
-}
-
 void printCodes(node<double>* root, int arr[], int top){
     // Assign 0 to left edge and recur
-    if (root->left_child())
-    {
+    if (root->left_child()){
         arr[top] = 0;
         printCodes(root->left_child(), arr, top + 1);
     }
- 
     // Assign 1 to right edge and recur
-    if (root->right_child())
-    {
+    if (root->right_child()){
         arr[top] = 1;
         printCodes(root->right_child(), arr, top + 1);
     }
- 
     // If this is a leaf node, then it contains one of the input
     // characters, print the character and its code from arr[]
-    if (isLeaf(root))
-    {
+    if (root->isLeaf()){
         cout << root->get_char() <<endl;
         string temp;
         temp = getPath(arr, top);
     }
-    //return temp;
 }
 
 string getPath(int arr[], int n)
@@ -230,12 +217,10 @@ void sortNodeVector(vector<node<double>* > &nodes){
 void printWeightsFile(node<double>* root, int &position){
 	fstream ofs("output.txt");
 	ofs.seekp(position);
-	ostringstream output;
-	output << noskipws;
 	if(root){
 		if(root->isLeaf()){
-			cout << root->get_char() << endl;
-			ofs << root->get_char();
+			cout << (int) root->get_char()[0] << endl;
+			ofs << (int) root->get_char()[0];
 			ofs << " ";
 			ofs << root->get_weight();
 			cout <<root->get_weight() << endl;
@@ -251,7 +236,6 @@ void printWeightsFile(node<double>* root, int &position){
 		}	
 	}
 }
-
 
 void Decode(node<double>* root, string encoded){
 	 node<double>* ptrRoot = root;
@@ -334,4 +318,12 @@ node<double>* treeFromTextFile(string filename, vector<node<double>* > &nodes){
 		}
 	}
 	return buildHuffmanTree(nodes);
+}
+
+void compressToFile(class node<double>* root){
+	string path = encode(root," ");
+
+	FILE * dat = fopen ("data.dat", "wb");
+	fwrite (&path, sizeof(path), 1, dat);
+	fclose(dat);
 }
