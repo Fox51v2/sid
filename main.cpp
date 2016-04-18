@@ -10,6 +10,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<sstream>
+#include"bitChar.cpp"
 
 
 using namespace std;
@@ -30,52 +31,68 @@ bool charAlreadyEncountered(vector<node<double>* > nodes, string s);
 int nodeIndexOf(vector<node<double>* > nodes, string c);
 node<double>* treeFromTextFile(string filename, vector<node<double>* > &nodes);
 void treeSize(node<double>* root, int &size);
-void compressToFile(node<double>* root);
-
+void compressToFile(node<double>* root, ofstream &outf);
 
 int main(){
-	string compressFile;
-	cout << "Enter text file to compress" << endl;
-	cin >> compressFile;
 
-	vector<node<double>*> textFileNodes = vector<node<double>* >();
-	node<double>* textFileRoot = treeFromTextFile(compressFile, textFileNodes);
-	int position = 0;
-	printWeightsFile(textFileRoot,position);
-	int textTreeSize = 0;
-	cout << "Something?" << endl;
-	treeSize(textFileRoot, textTreeSize);
+	//#1 + 6
+	cout << "Enter 1 to compress a file." << endl;
+	cout << "Enter 2 to decompress an hzip file using an hcode file." << endl;
+	cout << "Enter q to quit." << endl;
+	string option;
+	getline(cin,option);
+
+	if(option == "1"){
+		//compress file
+		//prompt for compress file name
+		string compressFile;
+		cout << "Enter text file to compress" << endl;
+		cin >> compressFile;
+		vector<node<double>*> textFileNodes = vector<node<double>* >();
+		node<double>* textFileRoot = treeFromTextFile(compressFile, textFileNodes);
+
+		int position = 0;
+		printWeightsFile(textFileRoot,position);
+		int textTreeSize = 0;
+		treeSize(textFileRoot, textTreeSize);
 	
-	int array[textTreeSize];
-	int top = 0;
+		int array[textTreeSize];
+		int top = 0;
 
-	printCodes(textFileRoot, array, top);
-
-
-	// string weightsFile;
-	// cout << "Enter the weights file name: ";
-	// // 1.1 Takes a weight file as input
-	// cin >> weightsFile; 
-
-	// node<double>* weightsRoot = weightsFileToTree(weightsFile);
-
-
-	// int sizeOfNewRoot = 0;
-	// treeSize(weightsRoot, sizeOfNewRoot);
+		printCodes(textFileRoot, array, top);
+		string compressedFile = compressFile + ".hzip";
+		ofstream outf(compressedFile.c_str());
+		compressToFile(textFileRoot,outf);
+		outf.close();
+	}
+	else if(option == "2"){
+		//prompt for hzip file
+		//prompt for hcode file
+	}
+	else if(option == "q"){
+		//quit file
+	}
+	else{
+		cout << "Invalid input." << endl;
+		cout << "Please enter 1 or 2 to select an option." << endl;
+		getline(cin,option);
+	}
 	
-	// //printTree(weightsRoot);
-	// int arr[sizeOfNewRoot], top = 0;
-	// //printCodes(weightsRoot, arr, top);
+	//get user input for filename
+	//create huffman tree
+	//read the file again and encode it using the codes from the huffman tree
+		//output as filename.hzip
+	//create file with lists of characters and binary encodings
+		//output as filename.hcodes
+	//print compression rations
+		//number of bits in compressed file divided by bits in original file (8x the number of characters)
+	//take .hzip file and .hcodes file
+		//decompress as filename.txt	
 
-	compressToFile(textFileRoot);
-	/*
-	dat = fopen("data.dat", "rb");
-	fread (&path, sizeof(path), 1, dat);
-	cout << "this is the path after decoding "<<path << endl;
+	//node<double>* root = buildHuffmanTree(nodes,totalWeight);
+	//printTree(root);
+
 	
-	fclose(dat);
-	*/
-
 	cout << "End!" << endl;	
 	return 0;
 }
@@ -115,6 +132,7 @@ string getPath(int arr[], int n)
     }
     cout << stringPath << endl;
     return stringPath;
+
 }
 
 string encode(node<double>* root, string c){
@@ -138,10 +156,7 @@ string encode(node<double>* root, string c){
 }
 
 node<double>* weightsFileToTree(string fileName){
-	
 	vector<node<double> > weights;
-
-	//for line in file
 	ifstream infile;
 	string key;  			//first character is the data for node
 	double weight;
@@ -320,10 +335,22 @@ node<double>* treeFromTextFile(string filename, vector<node<double>* > &nodes){
 	return buildHuffmanTree(nodes);
 }
 
-void compressToFile(class node<double>* root){
-	string path = encode(root," ");
-
-	FILE * dat = fopen ("data.dat", "wb");
-	fwrite (&path, sizeof(path), 1, dat);
-	fclose(dat);
+void compressToFile(node<double>* root, ofstream &outf){
+	node<double>* tempRoot = root;
+	if(tempRoot->isLeaf()){
+		string path = encode(tempRoot,tempRoot->get_char());
+		cout << "Attempting to write " << tempRoot->get_char() << endl;
+		//ifstream inf("data.dat");
+		bitChar bit;
+		bit.setBITS(path);
+		bit.insertBits(outf);
+	}
+	else{
+		if(tempRoot->left_child()){
+			compressToFile(tempRoot->left_child(), outf);
+		}
+		if(tempRoot->right_child()){
+			compressToFile(tempRoot->right_child(), outf);
+		}
+	}
 }
