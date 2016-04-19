@@ -390,13 +390,19 @@ void compressMethod(node<double> * root, vector<char> v){
 	for (int i = 0; i<v.size(); i++){
 		temp = v.at(i);
 
-		tempPath= encode(root, temp);
+		tempPath += encode(root, temp);
+		tempPath += "\n";
+		//bchar.setBITS(tempPath);
+		//bchar.writeBits(outf);
+		//bchar.insertBits(outf);
+
+		//cout <<"this is the path for " << v.at(i)<<" "<<tempPath<<endl;
+	}
 		bchar.setBITS(tempPath);
 		//bchar.writeBits(outf);
 		bchar.insertBits(outf);
 
-		cout <<"this is the path for " << v.at(i)<<" "<<tempPath<<endl;
-	}
+		cout <<"this is the path for " << v.at(1)<<" "<<tempPath<<endl;
 	
 	string fuck = bchar.readByBits(inf);
 	cout <<"This is the decompression "<<fuck<<endl;

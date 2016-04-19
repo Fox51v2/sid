@@ -23,6 +23,7 @@ class bitChar{
 			while (inf.read (buffer, 1))
 			{
 				s += getBits(*buffer);
+				s += "\n"; 
 			}
 			return s;
 		}
