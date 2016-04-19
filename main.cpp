@@ -10,6 +10,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<sstream>
+#include"bitChar.cpp"
 
 
 using namespace std;
@@ -24,38 +25,17 @@ void sortNodeVector(vector<node<double>* > &nodes);
 void printWeightsFile(node<double>* root, int &position);
 void printPath(node<double>* root,string letter);
 void printCodes(struct node<double>* root, int arr[], int top);
-int isLeaf(struct node<double> * root);
 string getPath(int arr[], int n);
-//<<<<<<< HEAD
-//int NumChar= 0 ;
-
-//=======
 node<double>* buildHuffmanTree(vector<node<double>* > &nodeVector);
 bool charAlreadyEncountered(vector<node<double>* > nodes, string s);
 int nodeIndexOf(vector<node<double>* > nodes, string c);
 node<double>* treeFromTextFile(string filename, vector<node<double>* > &nodes);
 void treeSize(node<double>* root, int &size);
-//>>>>>>> 53c50c4b5db44251ee4b07ebff3390b821a90e03
+void compressToFile(node<double>* root, ofstream &outf);
 
 int main(){
-	string compressFile;
-	cout << "Enter text file to compress" << endl;
-	cin >> compressFile;
 
-	vector<node<double>*> textFileNodes = vector<node<double>* >();
-	node<double>* textFileRoot = treeFromTextFile(compressFile, textFileNodes);
-	int position = 0;
-	printWeightsFile(textFileRoot,position);
-	int textTreeSize = 0;
-	cout << "Something?" << endl;
-	treeSize(textFileRoot, textTreeSize);
-	
-	int array[textTreeSize];
-	int top = 0;
-
-	printCodes(textFileRoot, array, top);
-
-
+<<<<<<< HEAD
 	//string path = encode(test,"a");
 	string path = encode(textFileRoot," ");
 
@@ -74,48 +54,90 @@ int main(){
 	fclose(dat);
 
 //	printCodes(root, arr, top1);
+=======
+	//#1 + 6
+	cout << "Enter 1 to compress a file." << endl;
+	cout << "Enter 2 to decompress an hzip file using an hcode file." << endl;
+	cout << "Enter q to quit." << endl;
+	string option;
+	getline(cin,option);
 
+	if(option == "1"){
+		//compress file
+		//prompt for compress file name
+		string compressFile;
+		cout << "Enter text file to compress" << endl;
+		cin >> compressFile;
+		vector<node<double>*> textFileNodes = vector<node<double>* >();
+		node<double>* textFileRoot = treeFromTextFile(compressFile, textFileNodes);
+
+		int position = 0;
+		printWeightsFile(textFileRoot,position);
+		int textTreeSize = 0;
+		treeSize(textFileRoot, textTreeSize);
+	
+		int array[textTreeSize];
+		int top = 0;
+
+		printCodes(textFileRoot, array, top);
+		string compressedFile = compressFile + ".hzip";
+		ofstream outf(compressedFile.c_str());
+		compressToFile(textFileRoot,outf);
+		outf.close();
+	}
+	else if(option == "2"){
+		//prompt for hzip file
+		//prompt for hcode file
+	}
+	else if(option == "q"){
+		//quit file
+	}
+	else{
+		cout << "Invalid input." << endl;
+		cout << "Please enter 1 or 2 to select an option." << endl;
+		getline(cin,option);
+	}
+	
+	//get user input for filename
+	//create huffman tree
+	//read the file again and encode it using the codes from the huffman tree
+		//output as filename.hzip
+	//create file with lists of characters and binary encodings
+		//output as filename.hcodes
+	//print compression rations
+		//number of bits in compressed file divided by bits in original file (8x the number of characters)
+	//take .hzip file and .hcodes file
+		//decompress as filename.txt	
+
+	//node<double>* root = buildHuffmanTree(nodes,totalWeight);
+	//printTree(root);
+>>>>>>> 7ca8e21e8d230d55fce576bed710906d8c9d733e
+
+	
 	cout << "End!" << endl;	
 	return 0;
 }
 
-int isLeaf(struct node<double> * root){
-    return !(root->left_child()) && !(root->right_child()) ;
-}
-
 void printCodes(node<double>* root, int arr[], int top){
     // Assign 0 to left edge and recur
-    if (root->left_child())
-    {
+    if (root->left_child()){
         arr[top] = 0;
         printCodes(root->left_child(), arr, top + 1);
     }
- 
     // Assign 1 to right edge and recur
-    if (root->right_child())
-    {
+    if (root->right_child()){
         arr[top] = 1;
         printCodes(root->right_child(), arr, top + 1);
     }
- 
     // If this is a leaf node, then it contains one of the input
     // characters, print the character and its code from arr[]
-    if (isLeaf(root))
-    {
+    if (root->isLeaf()){
         cout << root->get_char() <<endl;
-//<<<<<<< HEAD
-        //string temp; 
-//=======
         string temp;
-//>>>>>>> 53c50c4b5db44251ee4b07ebff3390b821a90e03
         temp = getPath(arr, top);
     }
-    //return temp;
 }
-//<<<<<<< HEAD
-//=======
 
-//>>>>>>> 53c50c4b5db44251ee4b07ebff3390b821a90e03
 string getPath(int arr[], int n)
 {
     int i;
@@ -131,11 +153,7 @@ string getPath(int arr[], int n)
     }
     cout << stringPath << endl;
     return stringPath;
-//<<<<<<< HEAD
-        //printf("%d", arr[i]);
-    //printf("\n");
-//=======
-//>>>>>>> 53c50c4b5db44251ee4b07ebff3390b821a90e03
+
 }
 
 string encode(node<double>* root, string c){
@@ -159,10 +177,7 @@ string encode(node<double>* root, string c){
 }
 
 node<double>* weightsFileToTree(string fileName){
-	
 	vector<node<double> > weights;
-
-	//for line in file
 	ifstream infile;
 	string key;  			//first character is the data for node
 	double weight;
@@ -238,12 +253,10 @@ void sortNodeVector(vector<node<double>* > &nodes){
 void printWeightsFile(node<double>* root, int &position){
 	fstream ofs("output.txt");
 	ofs.seekp(position);
-	ostringstream output;
-	output << noskipws;
 	if(root){
 		if(root->isLeaf()){
-			cout << root->get_char() << endl;
-			ofs << root->get_char();
+			cout << (int) root->get_char()[0] << endl;
+			ofs << (int) root->get_char()[0];
 			ofs << " ";
 			ofs << root->get_weight();
 			cout <<root->get_weight() << endl;
@@ -259,7 +272,6 @@ void printWeightsFile(node<double>* root, int &position){
 		}	
 	}
 }
-
 
 void Decode(node<double>* root, string encoded){
 	 node<double>* ptrRoot = root;
@@ -342,4 +354,24 @@ node<double>* treeFromTextFile(string filename, vector<node<double>* > &nodes){
 		}
 	}
 	return buildHuffmanTree(nodes);
+}
+
+void compressToFile(node<double>* root, ofstream &outf){
+	node<double>* tempRoot = root;
+	if(tempRoot->isLeaf()){
+		string path = encode(tempRoot,tempRoot->get_char());
+		cout << "Attempting to write " << tempRoot->get_char() << endl;
+		//ifstream inf("data.dat");
+		bitChar bit;
+		bit.setBITS(path);
+		bit.insertBits(outf);
+	}
+	else{
+		if(tempRoot->left_child()){
+			compressToFile(tempRoot->left_child(), outf);
+		}
+		if(tempRoot->right_child()){
+			compressToFile(tempRoot->right_child(), outf);
+		}
+	}
 }
