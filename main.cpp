@@ -56,54 +56,8 @@ int main(){
 	printCodes(textFileRoot, array, top);
 
 
-	// string weightsFile;
-	// cout << "Enter the weights file name: ";
-	// // 1.1 Takes a weight file as input
-	// cin >> weightsFile; 
-
-	// node<double>* weightsRoot = weightsFileToTree(weightsFile);
-
-
-	// int sizeOfNewRoot = 0;
-	// treeSize(weightsRoot, sizeOfNewRoot);
-	
-	// //printTree(weightsRoot);
-	// int arr[sizeOfNewRoot], top = 0;
-	// //printCodes(weightsRoot, arr, top);
-	
-	// string path = encode(weightsRoot," ");
-
-	// FILE * dat = fopen ("data.dat", "wb");
-	// fwrite (&path, sizeof(path), 1, dat);
-	// fclose(dat);
-
-	// dat = fopen("data.dat", "rb");
-	// fread (&path, sizeof(path), 1, dat);
-	// //cout << "this is the path after decoding "<<path << endl;
-	
-	// fclose(dat);
-
-<<<<<<< HEAD
-	//node<double>* root = buildHuffmanTree(nodes,totalWeight);
-	//printTree(root);
-	/*
-	vector<node<double>* > tester;
-	node<double>* test = treeFromTextFile("frequency.txt", tester);
-	printTree(test);
-	int sizeOfTest = 0;
-	treeSize(test,sizeOfTest);
-	int testArr[sizeOfTest];
-	printCodes(test, testArr, top);
-*/
-/*
-	Decode(root,"1111");
-	Decode(root,encode(root,"h"));
-	cout << "Past Decoding" << endl;
-
-	// Diego is sending the path to this function
-*/
 	//string path = encode(test,"a");
-	string path = encode(newRoot," ");
+	string path = encode(textFileRoot," ");
 
 	FILE * dat = fopen ("data.dat", "wb");
 	fwrite (&path, sizeof(unsigned char), 1, dat);
@@ -120,8 +74,6 @@ int main(){
 	fclose(dat);
 
 //	printCodes(root, arr, top1);
-=======
->>>>>>> 3e61687ceec3b9dfc001733c01b382ee118edfa6
 
 	cout << "End!" << endl;	
 	return 0;
