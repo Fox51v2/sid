@@ -32,11 +32,12 @@ int nodeIndexOf(vector<node<double>* > nodes, string c);
 node<double>* treeFromTextFile(string filename, vector<node<double>* > &nodes);
 void treeSize(node<double>* root, int &size);
 void compressToFile(node<double>* root, ofstream &outf);
+vector <char> generatePathFile();
+void compressMethod(node<double> * root, vector<char> v);
 
 int main(){
 
-<<<<<<< HEAD
-	//string path = encode(test,"a");
+	/*string path = encode(test,"a");
 	string path = encode(textFileRoot," ");
 
 	FILE * dat = fopen ("data.dat", "wb");
@@ -50,12 +51,12 @@ int main(){
 	while (!dat.eof()){
 		getline(dat, temp);
 		cout <<temp<<endl;
-	}*/	
-	fclose(dat);
+	}*
+	fclose(dat);*/
 
 //	printCodes(root, arr, top1);
-=======
 	//#1 + 6
+	vector<char> charVector;
 	cout << "Enter 1 to compress a file." << endl;
 	cout << "Enter 2 to decompress an hzip file using an hcode file." << endl;
 	cout << "Enter q to quit." << endl;
@@ -83,7 +84,13 @@ int main(){
 		string compressedFile = compressFile + ".hzip";
 		ofstream outf(compressedFile.c_str());
 		compressToFile(textFileRoot,outf);
+
 		outf.close();
+		charVector = generatePathFile();
+		cout << charVector.at(0)<< " the char in the vector" << endl;
+		compressMethod(textFileRoot, charVector);
+
+
 	}
 	else if(option == "2"){
 		//prompt for hzip file
@@ -111,7 +118,6 @@ int main(){
 
 	//node<double>* root = buildHuffmanTree(nodes,totalWeight);
 	//printTree(root);
->>>>>>> 7ca8e21e8d230d55fce576bed710906d8c9d733e
 
 	
 	cout << "End!" << endl;	
@@ -355,12 +361,54 @@ node<double>* treeFromTextFile(string filename, vector<node<double>* > &nodes){
 	}
 	return buildHuffmanTree(nodes);
 }
+vector <char> generatePathFile(){
+	vector<char> v;
+	ifstream infile;
+	infile.open("frequency.txt");
+	while(!infile.eof()){
+		string temp;
+		getline(infile, temp);
+		if(temp != ""){
+			for (int i = 0; i < temp.length(); i ++){
+				v.push_back(temp[i]);
+
+				//cout << v.at(i)<< " the char in the vector" << endl;
+			}
+
+		}
+
+	}
+	return v;
+
+}
+void compressMethod(node<double> * root, vector<char> v){
+	ofstream outf("compressfile.txt");
+	ifstream inf("compressfile.txt");
+	bitChar bchar;
+	string tempPath;
+	string temp;
+	for (int i = 0; i<v.size(); i++){
+		temp = v.at(i);
+
+		tempPath= encode(root, temp);
+		bchar.setBITS(tempPath);
+		//bchar.writeBits(outf);
+		bchar.insertBits(outf);
+
+		cout <<"this is the path for " << v.at(i)<<" "<<tempPath<<endl;
+	}
+	
+	string fuck = bchar.readByBits(inf);
+	cout <<"This is the decompression "<<fuck<<endl;
+
+}
+
 
 void compressToFile(node<double>* root, ofstream &outf){
 	node<double>* tempRoot = root;
 	if(tempRoot->isLeaf()){
 		string path = encode(tempRoot,tempRoot->get_char());
-		cout << "Attempting to write " << tempRoot->get_char() << endl;
+		//cout << "Attempting to write " << tempRoot->get_char() << endl;
 		//ifstream inf("data.dat");
 		bitChar bit;
 		bit.setBITS(path);
