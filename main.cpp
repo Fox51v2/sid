@@ -34,6 +34,8 @@ void treeSize(node<double>* root, int &size);
 void compressToFile(node<double>* root, ofstream &outf);
 vector <char> generatePathFile();
 void compressMethod(node<double> * root, vector<char> v);
+void decompressMethod(string fileName);
+void printHCodeFile(node<double>* root, int &position,node<double>* staticRoot);
 
 int main(){
 
@@ -74,6 +76,8 @@ int main(){
 
 		int position = 0;
 		printWeightsFile(textFileRoot,position);
+		position = 0;
+		printHCodeFile(textFileRoot,position,textFileRoot);
 		int textTreeSize = 0;
 		treeSize(textFileRoot, textTreeSize);
 	
@@ -81,6 +85,7 @@ int main(){
 		int top = 0;
 
 		printCodes(textFileRoot, array, top);
+
 		string compressedFile = compressFile + ".hzip";
 		ofstream outf(compressedFile.c_str());
 		compressToFile(textFileRoot,outf);
@@ -89,6 +94,7 @@ int main(){
 		charVector = generatePathFile();
 		cout << charVector.at(0)<< " the char in the vector" << endl;
 		compressMethod(textFileRoot, charVector);
+		decompressMethod("");
 
 
 	}
@@ -383,7 +389,6 @@ vector <char> generatePathFile(){
 }
 void compressMethod(node<double> * root, vector<char> v){
 	ofstream outf("compressfile.txt");
-	ifstream inf("compressfile.txt");
 	bitChar bchar;
 	string tempPath;
 	string temp;
@@ -403,10 +408,13 @@ void compressMethod(node<double> * root, vector<char> v){
 		bchar.insertBits(outf);
 
 		cout <<"this is the path for " << v.at(1)<<" "<<tempPath<<endl;
-	
-	string fuck = bchar.readByBits(inf);
-	cout <<"This is the decompression "<<fuck<<endl;
+}
 
+void decompressMethod(string fileName){
+	ifstream inf("compressfile.txt", ios::binary);
+	bitChar bChar;
+	string wat = bChar.readByBits(inf);
+	cout << "Decompression: " << endl << wat;
 }
 
 
@@ -428,4 +436,26 @@ void compressToFile(node<double>* root, ofstream &outf){
 			compressToFile(tempRoot->right_child(), outf);
 		}
 	}
+}
+
+void printHCodeFile(node<double>* root, int &position, node<double>* staticRoot){
+	fstream ofs("hcode.txt");
+	ofs.seekp(position);
+	node<double>* tempRoot = root;
+	if(root->isLeaf()){
+			cout << (int) root->get_char()[0] << " ";
+			ofs << (int) root->get_char()[0];
+			ofs << " ";
+			ofs << encode(staticRoot,root->get_char());
+			cout << encode(staticRoot,root->get_char()) << endl;
+			ofs << "\n";
+			position = ofs.tellp();
+			ofs.close();
+	}
+	if(root->left_child()){ 
+		printHCodeFile(root->left_child(), position,staticRoot);
+	}
+	if(root->right_child()){
+		printHCodeFile(root->right_child(), position,staticRoot);
+	}	
 }
