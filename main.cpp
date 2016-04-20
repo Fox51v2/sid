@@ -33,9 +33,10 @@ node<double>* treeFromTextFile(string filename, vector<node<double>* > &nodes);
 void treeSize(node<double>* root, int &size);
 void compressToFile(node<double>* root, ofstream &outf);
 vector <char> generatePathFile();
-void compressMethod(node<double> * root, vector<char> v);
+void compressMethod(node<double> * root, vector<char> v,string fileName);
 void decompressMethod(string fileName);
 void printHCodeFile(node<double>* root, int &position,node<double>* staticRoot, string fileName);
+double compressionRatio(string normal, string compressed);
 
 int main(){
 
@@ -88,14 +89,19 @@ int main(){
 		printCodes(textFileRoot, array, top);
 
 		string compressedFile = compressFile + ".hzip";
-		ofstream outf(compressedFile.c_str());
+/*		ofstream outf(compressedFile.c_str());
 		compressToFile(textFileRoot,outf);
-
-		outf.close();
+*/
+//		outf.close();
 		charVector = generatePathFile();
 		cout << charVector.at(0)<< " the char in the vector" << endl;
-		compressMethod(textFileRoot, charVector);
-		decompressMethod("");
+		compressMethod(textFileRoot, charVector,compressedFile);
+
+		cout << compressFile << " was compressed at a " 
+			 << setprecision(2)
+			 << compressionRatio(compressFile,compressedFile) 
+			 << "% rate" << endl;
+//		decompressMethod("");
 
 
 	}
@@ -388,8 +394,8 @@ vector <char> generatePathFile(){
 	return v;
 
 }
-void compressMethod(node<double> * root, vector<char> v){
-	ofstream outf("compressfile.txt");
+void compressMethod(node<double> * root, vector<char> v, string fileName){
+	ofstream outf(fileName.c_str());
 	bitChar bchar;
 	string tempPath;
 	string temp;
@@ -407,7 +413,7 @@ void compressMethod(node<double> * root, vector<char> v){
 		bchar.setBITS(tempPath);
 		//bchar.writeBits(outf);
 		bchar.insertBits(outf);
-
+		outf.close();
 		cout <<"this is the path for " << v.at(1)<<" "<<tempPath<<endl;
 }
 
@@ -459,4 +465,26 @@ void printHCodeFile(node<double>* root, int &position, node<double>* staticRoot,
 	if(root->right_child()){
 		printHCodeFile(root->right_child(), position,staticRoot,fileName);
 	}	
+}
+
+double compressionRatio(string normal, string compressed){
+	double normalFileSize = 0.0;
+	fstream nofs(normal.c_str(), fstream::in);
+	char dummyChar;
+	while(nofs >> noskipws >> dummyChar){
+		normalFileSize+=1;
+	}
+	nofs.close();
+	normalFileSize = normalFileSize * 8;
+
+	double compressedFileSize = 0.0;
+	fstream cofs(compressed.c_str(),fstream::in);
+	while(cofs >> noskipws >> dummyChar){
+		compressedFileSize +=1;
+	}
+	cofs.close();
+	compressedFileSize =compressedFileSize * 8;
+
+	return compressedFileSize / normalFileSize;
+
 }
