@@ -35,7 +35,7 @@ void compressToFile(node<double>* root, ofstream &outf);
 vector <char> generatePathFile();
 void compressMethod(node<double> * root, vector<char> v);
 void decompressMethod(string fileName);
-void printHCodeFile(node<double>* root, int &position,node<double>* staticRoot);
+void printHCodeFile(node<double>* root, int &position,node<double>* staticRoot, string fileName);
 
 int main(){
 
@@ -77,7 +77,8 @@ int main(){
 		int position = 0;
 		printWeightsFile(textFileRoot,position);
 		position = 0;
-		printHCodeFile(textFileRoot,position,textFileRoot);
+		string hcodeFileName = compressFile + ".hcode";
+		printHCodeFile(textFileRoot,position,textFileRoot,hcodeFileName);
 		int textTreeSize = 0;
 		treeSize(textFileRoot, textTreeSize);
 	
@@ -438,8 +439,8 @@ void compressToFile(node<double>* root, ofstream &outf){
 	}
 }
 
-void printHCodeFile(node<double>* root, int &position, node<double>* staticRoot){
-	fstream ofs("hcode.txt");
+void printHCodeFile(node<double>* root, int &position, node<double>* staticRoot, string fileName){
+	fstream ofs(fileName.c_str());
 	ofs.seekp(position);
 	node<double>* tempRoot = root;
 	if(root->isLeaf()){
@@ -453,9 +454,9 @@ void printHCodeFile(node<double>* root, int &position, node<double>* staticRoot)
 			ofs.close();
 	}
 	if(root->left_child()){ 
-		printHCodeFile(root->left_child(), position,staticRoot);
+		printHCodeFile(root->left_child(), position,staticRoot,fileName);
 	}
 	if(root->right_child()){
-		printHCodeFile(root->right_child(), position,staticRoot);
+		printHCodeFile(root->right_child(), position,staticRoot,fileName);
 	}	
 }
